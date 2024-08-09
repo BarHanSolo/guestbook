@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { ButtonVariant } from './types/button-variant';
+	import type { ButtonVariant } from './button-variant';
 
 	export let variant: ButtonVariant = 'primary';
 	export let disabled: boolean = false;
