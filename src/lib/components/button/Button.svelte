@@ -3,6 +3,7 @@
 	import type { ButtonVariant } from './button-variant';
 
 	export let variant: ButtonVariant = 'primary';
+	export let type: 'button' | 'reset' | 'submit' | null = 'button';
 	export let disabled: boolean = false;
 
 	const dispatch = createEventDispatcher();
@@ -30,6 +31,7 @@
 
 <button
 	{disabled}
+	{type}
 	class={`${getButtonVariantClass()} text-white rounded px-4 py-2 transition-colors ${getDisabledClass()}`}
 	on:click={handleClick}
 >
