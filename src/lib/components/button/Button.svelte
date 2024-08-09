@@ -6,23 +6,23 @@
 	export let type: 'button' | 'reset' | 'submit' | null = 'button';
 	export let disabled: boolean = false;
 
-	const dispatch = createEventDispatcher();
+	$: disabledClass = () => {
+		if (disabled) {
+			return 'grayscale-[75%]';
+		}
+		return '';
+	};
 
-	function getButtonVariantClass(): string {
+	$: variantClass = () => {
 		switch (variant) {
 			case 'primary':
 				return 'bg-amber-500' + (!disabled ? ' hover:bg-amber-700' : '');
 			case 'secondary':
 				return 'bg-gray-500' + (!disabled ? ' hover:bg-gray-700' : '');
 		}
-	}
+	};
 
-	function getDisabledClass(): string {
-		if (disabled) {
-			return 'grayscale-[75%]';
-		}
-		return '';
-	}
+	const dispatch = createEventDispatcher();
 
 	function handleClick() {
 		dispatch('click');
@@ -32,7 +32,7 @@
 <button
 	{disabled}
 	{type}
-	class={`${getButtonVariantClass()} text-white rounded px-4 py-2 transition-colors ${getDisabledClass()}`}
+	class={`${variantClass()} text-white rounded px-4 py-2 transition-colors ${disabledClass()}`}
 	on:click={handleClick}
 >
 	<slot></slot>
