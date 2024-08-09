@@ -1,5 +1,6 @@
 <script>
 	import Button from '$lib/components/button/Button.svelte';
+	import PhotoUpload from './../../lib/components/photo-upload/PhotoUpload.svelte';
 </script>
 
 <h2 class="text-2xl">Buttons</h2>
@@ -9,3 +10,6 @@
 	<Button disabled={true}>Upload Image</Button>
 	<Button variant="secondary" disabled={true}>Upload Image</Button>
 </div>
+
+<h2 class="mt-4 text-2xl">Upload Photo</h2>
+<PhotoUpload action="?/upload-photo" />
