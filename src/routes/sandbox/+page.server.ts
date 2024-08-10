@@ -3,6 +3,7 @@ import { error, type Actions } from '@sveltejs/kit';
 import fs from 'fs';
 import path from 'path';
 import ExifParser from 'exif-parser';
+import sharp from 'sharp';
 
 export const actions: Actions = {
 	'upload-photo': async ({ request }) => {
@@ -14,27 +15,33 @@ export const actions: Actions = {
 		}
 
 		// Sprawdzenie typu MIME
-		const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/heic'];
+		const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/heic'];
 		if (!allowedMimeTypes.includes(file.type)) {
 			return {
 				status: 400,
 				error: true,
-				message: 'Invalid file type. Only JPEG, PNG, and GIF are allowed.'
+				message: 'Invalid file type. Only JPEG and PNG are allowed.'
 			};
 		}
 
-        const uploadDir = path.resolve('static/uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
+        const uploadDirPhotos = path.resolve('static/uploads/photos');
+        const uploadDirThumbnails = path.resolve('static/uploads/thumbnails/m_');
+        if (!fs.existsSync(uploadDirPhotos)) {
+            fs.mkdirSync(uploadDirPhotos, { recursive: true });
         }
 
         const fileExtension = path.extname(file.name);
-        let newFileName = await generateUniqueFileName(file, uploadDir, fileExtension);
+        let newFileName = await generateUniqueFileName(file, uploadDirPhotos, fileExtension);
 
-        const filePath = path.join(uploadDir, newFileName);
+        const filePath = path.join(uploadDirPhotos, newFileName);
+        const thumbPath = uploadDirThumbnails + newFileName;
         try {
             const buffer = Buffer.from(await file.arrayBuffer());
             fs.writeFileSync(filePath, buffer);
+            const thumbnailBuffer = await sharp(buffer)
+        .resize(100) // Zmiana rozmiaru miniaturki (100px szerokości)
+        .toBuffer();
+            fs.writeFileSync(thumbPath, thumbnailBuffer);
             return { filePath };
         } catch (e) {
             console.error(e);
@@ -65,7 +72,7 @@ async function generateUniqueFileName(file: File, uploadDir: string, fileExtensi
     return newFileName;
 }
 
-async function getCreationDate(file: File): Promise<Date | null> {
+async function getCreationDate(file: File): Promise<string | null> {
     const buffer = Buffer.from(await file.arrayBuffer());
     const parser = ExifParser.create(buffer);
 

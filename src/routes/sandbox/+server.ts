@@ -5,12 +5,12 @@ import path from 'path';
 
 export function GET() {
 	// Ścieżka do katalogu z obrazami
-	const directoryPath = path.resolve('static/uploads');
+	const directoryPath = path.resolve('static/uploads/thumbnails');
 
 	let files = [];
 	try {
 		// Przeszukiwanie katalogu i generowanie pełnych URL-i do plików
-		files = fs.readdirSync(directoryPath).map(file => `/uploads/${file}`);
+		files = fs.readdirSync(directoryPath).map(file => `/uploads/thumbnails/${file}`);
 		return json({ files });
 	} catch (error) {
 		console.error('Unable to scan directory: ', error);
