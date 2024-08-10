@@ -46,7 +46,7 @@
 {#if showModal}
 	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
 		<div class="modal-content" role="document" on:click|stopPropagation>
-			<button class="modal-close" aria-label="Close" on:click={closeModal}> &times; </button>
+			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}> &times; </button>
 
 			<img src={selectedImage} alt="" />
 		</div>
@@ -90,12 +90,15 @@
 		object-fit: cover;
 	}
 
-	.close {
+	.modal-close {
 		position: absolute;
 		top: 10px;
 		right: 20px;
 		font-size: 40px;
 		color: white;
 		cursor: pointer;
+		z-index: 1010;
+    	padding: 10px 10px 20px 10px;             /*Dodanie odstępu wewnętrznego między symbolem a obwódką */
+    	background-color: rgba(0, 0, 0, 0.5); /* Opcjonalne tło za przyciskiem, aby lepiej go wyróżnić */
 	}
 </style>
