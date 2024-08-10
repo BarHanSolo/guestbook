@@ -25,7 +25,7 @@ export const actions: Actions = {
 		}
 
         const uploadDirPhotos = path.resolve('static/uploads/photos');
-        const uploadDirThumbnails = path.resolve('static/uploads/thumbnails/m_');
+        const uploadDirThumbnails = path.resolve('static/uploads/thumbnails');
         if (!fs.existsSync(uploadDirPhotos)) {
             fs.mkdirSync(uploadDirPhotos, { recursive: true });
         }
@@ -34,12 +34,12 @@ export const actions: Actions = {
         let newFileName = await generateUniqueFileName(file, uploadDirPhotos, fileExtension);
 
         const filePath = path.join(uploadDirPhotos, newFileName);
-        const thumbPath = uploadDirThumbnails + newFileName;
+        const thumbPath = path.join(uploadDirThumbnails, newFileName);
         try {
             const buffer = Buffer.from(await file.arrayBuffer());
             fs.writeFileSync(filePath, buffer);
             const thumbnailBuffer = await sharp(buffer)
-        .resize(100) // Zmiana rozmiaru miniaturki (100px szerokości)
+        .resize(400)
         .toBuffer();
             fs.writeFileSync(thumbPath, thumbnailBuffer);
             return { filePath };

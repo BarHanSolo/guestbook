@@ -12,7 +12,7 @@
 	// Funkcja wywoływana po kliknięciu na miniaturkę
 	function openModal(url: string) {
 		console.log('Opening modal for image:', url);
-		selectedImage = url;
+		selectedImage = url.replace('/thumbnails/', '/photos/');
 		showModal = true;
 	}
 
