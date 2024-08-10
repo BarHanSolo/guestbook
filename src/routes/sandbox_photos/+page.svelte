@@ -78,14 +78,16 @@
 	}
 
 	.modal-content {
-		position: relative;
-		max-width: 80%;
-		max-height: 80%;
+		position: absolute;
+		width: auto;
+		height: 80vh;
+		overflow: hidden;
 	}
 
 	.modal-content img {
-		width: 100%;
-		height: auto;
+		height: 100%;
+		width: auto;
+		object-fit: cover;
 	}
 
 	.close {
