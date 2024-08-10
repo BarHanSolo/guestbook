@@ -1,13 +1,16 @@
 <script lang="ts">
 	import Gallery from 'svelte-image-gallery';
-	const imageNames = ['20240225_110247.jpg', 'piekanirk.png', 'signal-2024-07-26-171730.jpeg'];  //na razie fotki są zahardkdowane, napisać funkcję trzeba która załaduje je z bazy
-    const imageUrls = imageNames.map(name => `/uploads/${name}`);
+    
+    export let data: { photos: string[] } | undefined; // Typ danych z load
+    let imageNames: string[] = data?.photos || [];  // Używamy zdjęć z load
+
+    const imageUrls = imageNames.map(name => `${name}`);
 
 	let selectedImage: string | null = null; // Przechowuje URL wybranego obrazu
     let showModal = false;    // Kontroluje widoczność modala
 
      // Funkcja wywoływana po kliknięciu na miniaturkę
-	 function openModal(url: string) {
+	function openModal(url: string) {
         console.log('Opening modal for image:', url);
         selectedImage = url;
         showModal = true;
