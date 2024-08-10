@@ -98,7 +98,9 @@
 		color: white;
 		cursor: pointer;
 		z-index: 1010;
-    	padding: 10px 10px 20px 10px;             /*Dodanie odstępu wewnętrznego między symbolem a obwódką */
-    	background-color: rgba(0, 0, 0, 0.5); /* Opcjonalne tło za przyciskiem, aby lepiej go wyróżnić */
+    	padding: 10px 10px 20px 10px;
+	}
+	.modal-close:hover {         
+    	background-color: rgba(0, 0, 0, 0.5);
 	}
 </style>
