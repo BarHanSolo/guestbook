@@ -8,7 +8,7 @@
 
 	$: disabledClass = () => {
 		if (disabled) {
-			return 'grayscale-[75%]';
+			return 'grayscale-[90%]';
 		}
 		return '';
 	};
@@ -16,7 +16,7 @@
 	$: variantClass = () => {
 		switch (variant) {
 			case 'primary':
-				return 'bg-amber-500' + (!disabled ? ' hover:bg-amber-700' : '');
+				return 'bg-skyblue-600' + (!disabled ? ' hover:bg-skyblue-800' : '');
 			case 'secondary':
 				return 'bg-gray-500' + (!disabled ? ' hover:bg-gray-700' : '');
 		}

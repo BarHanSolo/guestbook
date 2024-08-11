@@ -11,9 +11,7 @@
 		<PhotoUpload action="?/upload-photo" captureNew={true} />
 
 		<div>
-			<a href="/photos" class="p-2 text-amber-800 hover:text-amber-600 underline"
-				>Przeglądaj wszystkie zdjęcia</a
-			>
+			<a href="/photos" class="p-">Przeglądaj wszystkie zdjęcia</a>
 		</div>
 	</section>
 </section>
