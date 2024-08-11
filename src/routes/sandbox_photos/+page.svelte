@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Gallery from 'svelte-image-gallery';
+	import Fa from 'svelte-fa';
+	import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
@@ -60,8 +62,8 @@
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
-			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image">&#8249;</button>
-			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image">&#8250;</button>
+			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image"><Fa icon={faChevronLeft} /></button>
+			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"><Fa icon={faChevronRight} /></button>
 		</div>
 	</div>
 {/if}
@@ -127,19 +129,50 @@
 		background-color: transparent;
 		border: none;
 		cursor: pointer;
-		padding: 10px 30px 20px 30px;
+		height: 80%;
+		width: 50%;
 		z-index: 1010;
 	}
 
 	.left-arrow {
-		left: 10px;
+		left: 0; /* Ustawiamy lewą strzałkę przy lewej krawędzi */
+		padding-left: 10px;
+		display: flex;
+		justify-content: flex-start; /* Wyrównanie do lewej */
+		align-items: center;
 	}
 
 	.right-arrow {
-		right: 10px;
+		right: 0; /* Ustawiamy prawą strzałkę przy prawej krawędzi */
+		padding-right: 10px;
+		display: flex;
+		justify-content: flex-end; /* Wyrównanie do prawej */
+		align-items: center;
 	}
 
-	.arrow:hover {
-		background-color: rgba(0, 0, 0, 0.3);
+	.left-arrow::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		height: 60px;
+		background-color: transparent;
+		transition: background-color 0.2s;
+	}
+	.right-arrow::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		transform: translate(50%, -50%);
+		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		height: 60px;
+		background-color: transparent;
+		transition: background-color 0.2s;
+	}
+
+	/* Hover effect with smaller area */
+	.arrow:hover::before {
+		background-color: rgba(0, 0, 0, 0.3); /* Kolor podczas hovera */
 	}
 </style>

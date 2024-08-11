@@ -27,7 +27,6 @@
 			accept="image/*"
 			{id}
 			class="hidden"
-			capture="environment"
 			required
 			on:change={handleFileChanged}
 			{capture}
