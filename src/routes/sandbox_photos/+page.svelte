@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Gallery from 'svelte-image-gallery';
 	import Fa from 'svelte-fa';
-	import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+	import { faChevronLeft, faChevronRight, faX } from '@fortawesome/free-solid-svg-icons';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
@@ -58,7 +58,7 @@
 {#if showModal}
 	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
 		<div class="modal-content" role="document" on:click|stopPropagation>
-			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}> &times; </button>
+			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}><Fa scale=0.8 icon={faX} /></button>
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
@@ -93,16 +93,19 @@
 	}
 
 	.modal-content {
-		position: relative;
-		width: auto;
-		height: 80vh;
-		overflow: hidden;
-	}
+	position: relative;
+	width: 95vw; /* Umożliwia pełne wypełnienie ekranu */
+	height: 95vh; /* Umożliwia pełne wypełnienie ekranu */
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
 	.modal-content img {
-		height: 100%;
-		width: auto;
-		object-fit: cover;
+		max-width: 100%; /* Umożliwia pełne wypełnienie kontenera w szerokości */
+		max-height: 100%; /* Umożliwia pełne wypełnienie kontenera w wysokości */
+		object-fit: cover; /* Umożliwia zachowanie proporcji obrazu */
 	}
 
 	.modal-close {
