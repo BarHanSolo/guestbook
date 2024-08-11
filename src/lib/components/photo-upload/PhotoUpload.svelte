@@ -33,7 +33,7 @@
 		/>
 		<label
 			for={id}
-			class="flex items-center bg-gray-500 text-white rounded rounded-r-none px-4 py-2 cursor-pointer max-w-40 truncate"
+			class="flex items-center bg-gray-500 hover:bg-gray-600 text-white rounded rounded-r-none px-4 py-2 cursor-pointer max-w-40 truncate"
 		>
 			{#if captureNew}
 				<div class="px-1.5">
