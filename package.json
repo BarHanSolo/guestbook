@@ -37,7 +37,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/free-solid-svg-icons": "^6.6.0",
 		"exif-parser": "^0.1.12",
-		"sharp": "^0.33.4"
+		"sharp": "^0.33.4",
+		"svelte-fa": "^4.0.2"
 	}
 }
