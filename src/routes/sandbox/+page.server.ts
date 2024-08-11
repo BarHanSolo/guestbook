@@ -1,11 +1,10 @@
 import { error, type Actions } from '@sveltejs/kit';
-import { getCurrentUsername } from '$lib/components/users/user';
 import fs from 'fs';
 import path from 'path';
 import ExifParser from 'exif-parser';
 import sharp from 'sharp';
 
-let username = getCurrentUsername();
+let username = 'andrz';
 
 export const actions: Actions = {
 	'upload-photo': async ({ request }) => {

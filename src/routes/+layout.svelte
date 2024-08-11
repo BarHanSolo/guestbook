@@ -8,7 +8,7 @@
 	<slot />
 	<style>
 		body {
-			font-family: 'Cormorant SC'; /* Zmień na swoją czcionkę */
+			font-family: 'Cormorant SC';
 		}
 	</style>
 </main>
