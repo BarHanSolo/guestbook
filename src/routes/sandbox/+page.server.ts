@@ -1,9 +1,11 @@
-import { USERNAME } from '$env/static/private';
 import { error, type Actions } from '@sveltejs/kit';
+import { getCurrentUsername } from '$lib/components/users/user';
 import fs from 'fs';
 import path from 'path';
 import ExifParser from 'exif-parser';
 import sharp from 'sharp';
+
+let username = getCurrentUsername();
 
 export const actions: Actions = {
 	'upload-photo': async ({ request }) => {
@@ -64,11 +66,11 @@ async function generateUniqueFileName(
 	}
 
 	let counter = 1;
-	const userFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(USERNAME));
-	let newFileName = `${USERNAME}${formattedDate}${fileExtension}`;
+	const userFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(username));
+	let newFileName = `${username}${formattedDate}${fileExtension}`;
 
 	while (userFiles.includes(newFileName)) {
-		newFileName = `${USERNAME}${formattedDate}${counter++}${fileExtension}`;
+		newFileName = `${username}${formattedDate}${counter++}${fileExtension}`;
 	}
 
 	return newFileName;
