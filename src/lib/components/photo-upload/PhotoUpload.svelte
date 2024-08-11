@@ -19,6 +19,7 @@
 			accept="image/*"
 			id="file-input"
 			class="hidden"
+			capture="environment"
 			required
 			on:change={handleFileChanged}
 		/>
