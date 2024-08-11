@@ -9,10 +9,6 @@
 		const input = event.target as HTMLInputElement;
 		fileName = input.files?.[0]?.name;
 	}
-
-	function handleSubmit(event: Event): void {
-		event.preventDefault();
-	}
 </script>
 
 <form class="flex" method="post" {action} enctype="multipart/form-data">
@@ -28,7 +24,7 @@
 		/>
 		<label
 			for="file-input"
-			class="bg-gray-500 text-white rounded rounded-r-none px-4 py-2 cursor-pointer text-center"
+			class="bg-gray-500 text-white rounded rounded-r-none px-4 py-2 cursor-pointer text-center max-w-40 truncate"
 		>
 			{fileName || 'Wybierz zdjęcie'}
 		</label>
