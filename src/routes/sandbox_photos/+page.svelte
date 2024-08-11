@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Gallery from 'svelte-image-gallery';
 	import Fa from 'svelte-fa';
-	import { faChevronLeft, faChevronRight, faX } from '@fortawesome/free-solid-svg-icons';
+	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
@@ -58,7 +58,7 @@
 {#if showModal}
 	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
 		<div class="modal-content" role="document" on:click|stopPropagation>
-			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}><Fa scale=0.8 icon={faX} /></button>
+			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}><Fa scale=0.8 icon={faXmark} /></button>
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
@@ -116,7 +116,7 @@
 		color: white;
 		cursor: pointer;
 		z-index: 1010;
-		padding: 10px 10px 20px 10px;
+		padding: 10px;
 	}
 	.modal-close:hover {
 		background-color: rgba(0, 0, 0, 0.5);
