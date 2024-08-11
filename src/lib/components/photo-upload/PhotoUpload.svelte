@@ -33,16 +33,18 @@
 		/>
 		<label
 			for={id}
-			class="flex items-center bg-gray-500 hover:bg-gray-600 text-white rounded rounded-r-none px-4 py-2 cursor-pointer max-w-40 truncate"
+			class="flex flex-1 items-center bg-gray-500 hover:bg-gray-600 text-white rounded rounded-r-none px-4 py-2 cursor-pointer max-w-40"
 		>
 			{#if captureNew}
 				<div class="px-1.5">
 					<Fa scale={1.2} icon={faCamera} />
 				</div>
 			{:else}
-				{fileName || 'Wybierz zdjęcie'}
+				<div class="truncate">
+					{fileName || 'Wybierz zdjęcie'}
+				</div>
 			{/if}
 		</label>
 	</div>
-	<Button type="submit" disabled={!fileName}>Dodaj</Button>
+	<Button type="submit" disabled={!fileName} disableRoundedCorners="left">Wyślij</Button>
 </form>

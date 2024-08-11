@@ -5,6 +5,7 @@
 	export let variant: ButtonVariant = 'primary';
 	export let type: 'button' | 'reset' | 'submit' | null = 'button';
 	export let disabled: boolean = false;
+	export let disableRoundedCorners: 'left' | 'right' | 'both' | false = false;
 
 	$: disabledClass = () => {
 		if (disabled) {
@@ -22,6 +23,19 @@
 		}
 	};
 
+	$: disabledRoundedCornersClass = () => {
+		switch (disableRoundedCorners) {
+			case 'left':
+				return 'rounded-l-none';
+			case 'right':
+				return 'rounded-r-none';
+			case 'both':
+				return 'rounded-none';
+			default:
+				return '';
+		}
+	};
+
 	const dispatch = createEventDispatcher();
 
 	function handleClick() {
@@ -32,7 +46,7 @@
 <button
 	{disabled}
 	{type}
-	class={`${variantClass()} text-white rounded px-4 py-2 transition-colors ${disabledClass()}`}
+	class={`${variantClass()} text-white rounded px-4 py-2 transition-colors ${disabledClass()} ${disabledRoundedCornersClass()}`}
 	on:click={handleClick}
 >
 	<slot></slot>
