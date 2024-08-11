@@ -5,3 +5,11 @@
 a {
 	@apply text-skyblue-500 hover:text-skyblue-900 underline;
 }
+
+dialog {
+	@apply p-6 bg-white shadow-lg rounded-lg fixed;
+}
+
+dialog::backdrop {
+	@apply bg-gray-800 bg-opacity-50 block;
+}

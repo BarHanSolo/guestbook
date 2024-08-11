@@ -24,87 +24,89 @@ export const actions: Actions = {
 			};
 		}
 
-        const uploadDirPhotos = path.resolve('static/uploads/photos');
-        const uploadDirThumbnails = path.resolve('static/uploads/thumbnails');
-        if (!fs.existsSync(uploadDirPhotos)) {
-            fs.mkdirSync(uploadDirPhotos, { recursive: true });
-        }
+		const uploadDirPhotos = path.resolve('static/uploads/photos');
+		const uploadDirThumbnails = path.resolve('static/uploads/thumbnails');
+		if (!fs.existsSync(uploadDirPhotos)) {
+			fs.mkdirSync(uploadDirPhotos, { recursive: true });
+		}
 
-        const fileExtension = path.extname(file.name);
-        let newFileName = await generateUniqueFileName(file, uploadDirPhotos, fileExtension);
+		const fileExtension = path.extname(file.name);
+		const newFileName = await generateUniqueFileName(file, uploadDirPhotos, fileExtension);
 
-        const filePath = path.join(uploadDirPhotos, newFileName);
-        const thumbPath = path.join(uploadDirThumbnails, newFileName);
-        try {
-            const buffer = Buffer.from(await file.arrayBuffer());
-            fs.writeFileSync(filePath, buffer);
-            const thumbnailBuffer = await sharp(buffer)
-        .resize(400)
-        .toBuffer();
-            fs.writeFileSync(thumbPath, thumbnailBuffer);
-            return { filePath };
-        } catch (e) {
-            console.error(e);
-            return error(500, { message: 'Internal server error' });
-        }
-    }
+		const filePath = path.join(uploadDirPhotos, newFileName);
+		const thumbPath = path.join(uploadDirThumbnails, newFileName);
+		try {
+			const buffer = Buffer.from(await file.arrayBuffer());
+			fs.writeFileSync(filePath, buffer);
+			const thumbnailBuffer = await sharp(buffer).resize(400).toBuffer();
+			fs.writeFileSync(thumbPath, thumbnailBuffer);
+			return { filePath };
+		} catch (e) {
+			console.error(e);
+			return error(500, { message: 'Internal server error' });
+		}
+	}
 };
 
-async function generateUniqueFileName(file: File, uploadDir: string, fileExtension: string): Promise<string> {
-    let formattedDate: string;
-    const creationDate = await getCreationDate(file);
+async function generateUniqueFileName(
+	file: File,
+	uploadDir: string,
+	fileExtension: string
+): Promise<string> {
+	let formattedDate: string;
+	const creationDate = await getCreationDate(file);
 
-    if (creationDate) {
-        formattedDate = formatDate(creationDate);
-    } else {
-        formattedDate = getCurrentFormattedDate();
-        console.warn('No creation date found in EXIF. Using current date instead.');
-    }
+	if (creationDate) {
+		formattedDate = formatDate(creationDate);
+	} else {
+		formattedDate = getCurrentFormattedDate();
+		console.warn('No creation date found in EXIF. Using current date instead.');
+	}
 
-    let counter = 1;
-    const userFiles = fs.readdirSync(uploadDir).filter(f => f.startsWith(USERNAME));
-    let newFileName = `${USERNAME}${formattedDate}${fileExtension}`;
+	let counter = 1;
+	const userFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(USERNAME));
+	let newFileName = `${USERNAME}${formattedDate}${fileExtension}`;
 
-    while (userFiles.includes(newFileName)) {
-        newFileName = `${USERNAME}${formattedDate}${counter++}${fileExtension}`;
-    }
+	while (userFiles.includes(newFileName)) {
+		newFileName = `${USERNAME}${formattedDate}${counter++}${fileExtension}`;
+	}
 
-    return newFileName;
+	return newFileName;
 }
 
 async function getCreationDate(file: File): Promise<string | null> {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const parser = ExifParser.create(buffer);
+	const buffer = Buffer.from(await file.arrayBuffer());
+	const parser = ExifParser.create(buffer);
 
-    try {
-        const exifData = parser.parse();
-        return exifData.tags.DateTimeOriginal || exifData.tags.DateTime || null;
-    } catch (e) {
-        console.error('Error parsing EXIF data:', e);
-        return null;
-    }
+	try {
+		const exifData = parser.parse();
+		return exifData.tags.DateTimeOriginal || exifData.tags.DateTime || null;
+	} catch (e) {
+		console.error('Error parsing EXIF data:', e);
+		return null;
+	}
 }
 
 function formatDate(creationDate: string): string {
-    const date = new Date(creationDate);
-    return [
-        String(date.getDate()).padStart(2, '0'),
-        String(date.getMonth() + 1).padStart(2, '0'),
-        date.getFullYear(),
-        String(date.getHours()).padStart(2, '0'),
-        String(date.getMinutes()).padStart(2, '0'),
-        String(date.getSeconds()).padStart(2, '0')
-    ].join('');
+	const date = new Date(creationDate);
+	return [
+		String(date.getDate()).padStart(2, '0'),
+		String(date.getMonth() + 1).padStart(2, '0'),
+		date.getFullYear(),
+		String(date.getHours()).padStart(2, '0'),
+		String(date.getMinutes()).padStart(2, '0'),
+		String(date.getSeconds()).padStart(2, '0')
+	].join('');
 }
 
 function getCurrentFormattedDate(): string {
-    const now = new Date();
-    return [
-        String(now.getDate()).padStart(2, '0'),
-        String(now.getMonth() + 1).padStart(2, '0'),
-        now.getFullYear(),
-        String(now.getHours()).padStart(2, '0'),
-        String(now.getMinutes()).padStart(2, '0'),
-        String(now.getSeconds()).padStart(2, '0')
-    ].join('');
+	const now = new Date();
+	return [
+		String(now.getDate()).padStart(2, '0'),
+		String(now.getMonth() + 1).padStart(2, '0'),
+		now.getFullYear(),
+		String(now.getHours()).padStart(2, '0'),
+		String(now.getMinutes()).padStart(2, '0'),
+		String(now.getSeconds()).padStart(2, '0')
+	].join('');
 }
