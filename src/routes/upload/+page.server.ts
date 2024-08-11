@@ -1,12 +1,13 @@
-import { USERNAME } from '$env/static/private';
 import { error, type Actions } from '@sveltejs/kit';
+import 'dotenv/config';
 import ExifParser from 'exif-parser';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 import path from 'path';
 import sharp from 'sharp';
 
 export const actions: Actions = {
-	'upload-photo': async ({ request }) => {
+	'upload-photo': async ({ request, cookies }) => {
 		const formData = await request.formData();
 		const file = formData.get('file') as File;
 
@@ -30,8 +31,19 @@ export const actions: Actions = {
 			fs.mkdirSync(uploadDirPhotos, { recursive: true });
 		}
 
+		const token = cookies.get('token');
+		if (!token) {
+			return error(401, { message: 'User unauthorized' });
+		}
+		const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as jwt.JwtPayload;
+		const username = decodedToken.username;
 		const fileExtension = path.extname(file.name);
-		const newFileName = await generateUniqueFileName(file, uploadDirPhotos, fileExtension);
+		const newFileName = await generateUniqueFileName(
+			file,
+			uploadDirPhotos,
+			fileExtension,
+			username
+		);
 
 		const filePath = path.join(uploadDirPhotos, newFileName);
 		const thumbPath = path.join(uploadDirThumbnails, newFileName);
@@ -51,7 +63,8 @@ export const actions: Actions = {
 async function generateUniqueFileName(
 	file: File,
 	uploadDir: string,
-	fileExtension: string
+	fileExtension: string,
+	username: string
 ): Promise<string> {
 	let formattedDate: string;
 	const creationDate = await getCreationDate(file);
@@ -64,11 +77,11 @@ async function generateUniqueFileName(
 	}
 
 	let counter = 1;
-	const userFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(USERNAME));
-	let newFileName = `${USERNAME}${formattedDate}${fileExtension}`;
+	const userFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(username));
+	let newFileName = `${username}${formattedDate}${fileExtension}`;
 
 	while (userFiles.includes(newFileName)) {
-		newFileName = `${USERNAME}${formattedDate}${counter++}${fileExtension}`;
+		newFileName = `${username}${formattedDate}${counter++}${fileExtension}`;
 	}
 
 	return newFileName;

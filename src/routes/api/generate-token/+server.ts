@@ -3,7 +3,7 @@ import { error, json } from '@sveltejs/kit';
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
 	const { username } = await request.json();
 
 	if (!username) {
@@ -13,6 +13,8 @@ export async function POST({ request }) {
 	const jwtSecret = process.env.JWT_SECRET as string;
 	const id = simpleID(username);
 	const token = jwt.sign({ id, username }, jwtSecret, { expiresIn: '7days' });
+
+	cookies.set('token', token, { path: '/', httpOnly: false });
 
 	return json({ token }, { status: 200 });
 }

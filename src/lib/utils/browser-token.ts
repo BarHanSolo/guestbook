@@ -1,3 +1,10 @@
+import { getCookie } from './get-browser-cookie';
+
 export function getBrowserToken(): string | null {
-	return localStorage.getItem('token');
+	const wholeToken = getCookie('token');
+
+	if (!wholeToken) {
+		return null;
+	}
+	return wholeToken.substring(7);
 }
