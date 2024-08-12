@@ -42,11 +42,35 @@
 		currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
 		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 	}
+
+	async function getUsername(event: MouseEvent) {
+		event.preventDefault();
+
+		try {
+			const response = await fetch('/api/get-username', {
+				method: 'GET'
+			});
+
+			if (!response.ok) {
+				// Obsługa błędów, jeśli serwer zwróci błąd
+				throw new Error('Failed to fetch username');
+			}
+
+			const data = await response.json();
+			const username = data.username;
+			console.log('Username:', username);
+
+			// Możesz teraz zrobić coś z tokenem, np. ustawić go w stanie aplikacji
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
 </script>
 
 <h2 class="text-2xl">Photos</h2>
 <br />
 <div class="flex flex-wrap gap-4">
+	<button on:click={getUsername}>Get Token</button>
 	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
 		{#each imageUrls as url, index}
 			<img src={url} alt="" style="cursor: pointer;" />
@@ -93,14 +117,14 @@
 	}
 
 	.modal-content {
-	position: relative;
-	width: 95vw; /* Umożliwia pełne wypełnienie ekranu */
-	height: 95vh; /* Umożliwia pełne wypełnienie ekranu */
-	overflow: hidden;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+		position: relative;
+		width: 95vw; /* Umożliwia pełne wypełnienie ekranu */
+		height: 95vh; /* Umożliwia pełne wypełnienie ekranu */
+		overflow: hidden;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
 	.modal-content img {
 		max-width: 100%; /* Umożliwia pełne wypełnienie kontenera w szerokości */
