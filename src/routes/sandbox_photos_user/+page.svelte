@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Gallery from 'svelte-image-gallery';
-	import Fa from 'svelte-fa';
 	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
+	import Gallery from 'svelte-image-gallery';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
@@ -43,7 +43,7 @@
 		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 	}
 
-	async function getUsername(event: MouseEvent) {
+	async function getUserData(event: MouseEvent) {
 		event.preventDefault();
 
 		try {
@@ -52,15 +52,12 @@
 			});
 
 			if (!response.ok) {
-				// Obsługa błędów, jeśli serwer zwróci błąd
-				throw new Error('Failed to fetch username');
+				throw new Error('Failed to fetch user data');
 			}
 
 			const data = await response.json();
-			const username = data.username;
-			console.log('Username:', username);
-
-			// Możesz teraz zrobić coś z tokenem, np. ustawić go w stanie aplikacji
+			const { user } = data;
+			console.log('User:', user);
 		} catch (error) {
 			console.error('Error:', error);
 		}
@@ -70,7 +67,7 @@
 <h2 class="text-2xl">Photos</h2>
 <br />
 <div class="flex flex-wrap gap-4">
-	<button on:click={getUsername}>Get Token</button>
+	<button on:click={getUserData}>Get Token</button>
 	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
 		{#each imageUrls as url, index}
 			<img src={url} alt="" style="cursor: pointer;" />
@@ -82,12 +79,18 @@
 {#if showModal}
 	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
 		<div class="modal-content" role="document" on:click|stopPropagation>
-			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}><Fa scale=0.8 icon={faXmark} /></button>
+			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}
+				><Fa scale="0.8" icon={faXmark} /></button
+			>
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
-			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image"><Fa icon={faChevronLeft} /></button>
-			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"><Fa icon={faChevronRight} /></button>
+			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image"
+				><Fa icon={faChevronLeft} /></button
+			>
+			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"
+				><Fa icon={faChevronRight} /></button
+			>
 		</div>
 	</div>
 {/if}

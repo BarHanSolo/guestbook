@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { getBrowserToken } from '$lib/utils/browser-token';
 	import { onMount } from 'svelte';
+	import { user, type User } from '../../../store/userStore';
 	import Button from '../button/Button.svelte';
+
+	export let userData: null | User;
 
 	let dialog: HTMLDialogElement;
 	let username: string = '';
-	let token: string | null;
 
 	onMount(() => {
-		token = getBrowserToken();
-		if (!token) {
+		if (!userData) {
 			dialog.showModal();
 		}
 	});
@@ -20,9 +20,13 @@
 		fetch('/api/generate-token', {
 			method: 'POST',
 			body: JSON.stringify({ username })
-		}).then(() => {
-			dialog.close();
-		});
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				console.log(res);
+				dialog.close();
+				user.set(res);
+			});
 	}
 </script>
 
