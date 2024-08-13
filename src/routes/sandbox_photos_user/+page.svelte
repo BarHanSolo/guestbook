@@ -2,15 +2,17 @@
 	import Gallery from 'svelte-image-gallery';
 	import Fa from 'svelte-fa';
 	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import { onMount } from 'svelte';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
+	let isLoading: boolean = true;
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
 	}
 
-	const imageUrls = imageNames.map((name) => `${name}`);
+	let imageUrls = imageNames.map((name) => `${name}`);
 
 	let selectedImage: string | null = null;
 	let showModal = false;
@@ -43,8 +45,7 @@
 		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 	}
 
-	async function getUsername(event: MouseEvent) {
-		event.preventDefault();
+	async function getUsername() {
 
 		try {
 			const response = await fetch('/api/get-username', {
@@ -58,23 +59,45 @@
 
 			const data = await response.json();
 			const username = data.username;
-			console.log('Username:', username);
+			return username;
 
 			// Możesz teraz zrobić coś z tokenem, np. ustawić go w stanie aplikacji
 		} catch (error) {
 			console.error('Error:', error);
 		}
 	}
+
+	async function limitPhotos(): Promise<string[]> {
+		const username = await getUsername();
+		const filteredUrls = imageUrls.filter(url => {
+			const regex = new RegExp(`${username}\\d+`);
+		return regex.test(url);
+		});
+		return filteredUrls;
+	}
+
+	onMount(async () => {
+		imageUrls = await limitPhotos();
+		console.log(isLoading)
+		isLoading = false;
+		console.log(imageUrls)
+		console.log(isLoading)
+	});
+
 </script>
 
 <h2 class="text-2xl">Photos</h2>
 <br />
 <div class="flex flex-wrap gap-4">
-	<button on:click={getUsername}>Get Token</button>
 	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
-		{#each imageUrls as url, index}
-			<img src={url} alt="" style="cursor: pointer;" />
-		{/each}
+		{#if isLoading}
+			<!-- Możesz dodać spinner lub tekst ładowania -->
+			<p>Loading images...</p>
+		{:else}
+			{#each imageUrls as url, index}
+				<img src={url} alt="" style="cursor: pointer;" />
+			{/each}
+		{/if}
 	</Gallery>
 </div>
 
