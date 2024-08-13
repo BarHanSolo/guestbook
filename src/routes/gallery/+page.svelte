@@ -2,6 +2,8 @@
 	import Gallery from 'svelte-image-gallery';
 	import Fa from 'svelte-fa';
 	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import { nextImage, prevImage } from '$lib/utils/modal';
+
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
@@ -33,15 +35,22 @@
 		openModal(index);
 	}
 
-	function nextImage() {
-		currentIndex = (currentIndex + 1) % imageUrls.length;
-		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
-	}
+    const setCurrentIndex = (index: number) => {
+        currentIndex = index; // Ustawia indeks bieżącego obrazu
+    };
 
-	function prevImage() {
-		currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
-		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
-	}
+	const setSelectedImage = (image: string) => {
+        selectedImage = image; // Ustawia wybrany obraz
+    };
+
+	function goToNextImage() {
+        nextImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+    }
+
+    function goToPreviousImage() {
+        prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+    }
+	
 </script>
 
 <h2 class="text-2xl">Photos</h2>
@@ -62,8 +71,12 @@
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
-			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image"><Fa icon={faChevronLeft} /></button>
-			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"><Fa icon={faChevronRight} /></button>
+            <button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
+                <Fa icon={faChevronLeft} />
+            </button>
+            <button class="arrow right-arrow" on:click={goToNextImage} aria-label="Next Image">
+                <Fa icon={faChevronRight} />
+            </button>
 		</div>
 	</div>
 {/if}
