@@ -1,33 +1,25 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { goto } from '$app/navigation';
-    import Button from '../button/Button.svelte';
+	import { page } from '$app/stores';
 </script>
 
-<div class='flex space-between justify-between'>
-    <nav class="menu">
-        <ul class="menu-list">
-            <li><Button on:click={() => goto('/upload')}>Upload</Button></li>
-            <li><Button on:click={() => goto('/gallery')}>Galeria</Button></li>
-            <li><Button on:click={() => goto('/gallery-user')}>Twoje zdjęcia</Button></li>
-        </ul>
-    </nav>
-</div>
+<nav class="p-4 h-24 bg-gradient-to-b from-white to-white/0 via-white/95">
+	<ul class="flex justify-between">
+		<li>
+			<a class:text-skyblue-800={$page.url.pathname === '/upload'} href="/upload">Upload</a>
+		</li>
+		<li>
+			<a class:text-skyblue-800={$page.url.pathname === '/gallery'} href="/gallery">Galeria</a>
+		</li>
+		<li>
+			<a class:text-skyblue-800={$page.url.pathname === '/gallery-user'} href="/gallery-user"
+				>Twoje zdjęcia</a
+			>
+		</li>
+	</ul>
+</nav>
 
 <style>
-    .menu {
-        padding: 10px;
-    }
-    
-    .menu-list {
-        list-style: none;
-        display: flex;
-        gap: 15px;
-        margin: 0;
-        padding: 0;
-    }
-
-    .menu-list li {
-        color: white;
-    }
+	ul > li > a {
+		@apply font-bold no-underline text-lg;
+	}
 </style>

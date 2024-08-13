@@ -15,17 +15,20 @@
 	});
 </script>
 
-<!-- TODO: Header goes here -->
-<main class="p-2 h-screen w-screen">
-	<Menu />
-	<slot />
-	<style>
-		body {
-			font-family: 'Cormorant SC';
-		}
-	</style>
-</main>
-<!-- TODO: Footer goes here -->
+<section class="flex flex-col gap-2 py-2 h-screen w-screen">
+	<header class="sticky z-50 top-0">
+		<Menu />
+	</header>
+	<main class="p-2">
+		<slot />
+		<style>
+			body {
+				font-family: 'Cormorant SC';
+			}
+		</style>
+	</main>
+	<!-- TODO: Footer goes here -->
+</section>
 
 {#if mounted}
 	<LoginDialog userData={$user} />
