@@ -13,8 +13,9 @@ export async function POST({ request, cookies }) {
 	const jwtSecret = process.env.JWT_SECRET as string;
 	const id = simpleID(username);
 	const token = jwt.sign({ id, username }, jwtSecret, { expiresIn: '7days' });
+	const tokenDecoded = jwt.verify(token, jwtSecret) as jwt.JwtPayload;
 
 	cookies.set('token', token, { path: '/', httpOnly: false });
 
-	return json({ token }, { status: 200 });
+	return json({ user: tokenDecoded }, { status: 200 });
 }
