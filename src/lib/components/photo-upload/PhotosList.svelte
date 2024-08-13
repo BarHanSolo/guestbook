@@ -5,7 +5,7 @@
 			const response = await fetch('/sandbox');
 			if (response.ok) {
 				const data = await response.json();
-				fileList = data.files;  // Zwracamy listę plików z klucza `files`
+				fileList = data.files;
 			} else {
 				console.error('Failed to fetch files');
 			}

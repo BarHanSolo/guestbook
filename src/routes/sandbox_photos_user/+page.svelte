@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import Button from '$lib/components/button/Button.svelte';
+	import { faChevronLeft, faChevronRight, faXmark, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import Gallery from 'svelte-image-gallery';
@@ -48,7 +49,7 @@
 	async function getUsername() {
 
 		try {
-			const response = await fetch('/api/get-username', {
+			const response = await fetch('/api/current-user', {
 				method: 'GET'
 			});
 
@@ -57,10 +58,9 @@
 			}
 
 			const data = await response.json();
-			const username = data.username;
+			const username = data.user.username;
 			return username;
 
-			// Możesz teraz zrobić coś z tokenem, np. ustawić go w stanie aplikacji
 		} catch (error) {
 			console.error('Error:', error);
 		}
@@ -77,10 +77,7 @@
 
 	onMount(async () => {
 		imageUrls = await limitPhotos();
-		console.log(isLoading)
 		isLoading = false;
-		console.log(imageUrls)
-		console.log(isLoading)
 	});
 
 </script>
@@ -88,16 +85,16 @@
 <h2 class="text-2xl">Photos</h2>
 <br />
 <div class="flex flex-wrap gap-4">
-	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
-		{#if isLoading}
-			<!-- Możesz dodać spinner lub tekst ładowania -->
-			<p>Loading images...</p>
-		{:else}
+	{#if isLoading}
+	<!-- Możesz dodać spinner lub tekst ładowania -->
+	<p>Loading images...</p>
+	{:else}
+		<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
 			{#each imageUrls as url, index}
 				<img src={url} alt="" style="cursor: pointer;" />
 			{/each}
-		{/if}
-	</Gallery>
+		</Gallery>
+	{/if}
 </div>
 
 <!-- Modal -->
@@ -116,6 +113,30 @@
 			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"
 				><Fa icon={faChevronRight} /></button
 			>
+			<!-- Delete Button -->
+			<button
+			class="modal-delete hover:text-red-800 text-xl"
+			on:click={async (e) => {
+				const response = await fetch(``, {
+					method: 'DELETE',
+					body: JSON.stringify({ filename: selectedImage }),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+		
+				if (response.ok) {
+					console.log('File deleted successfully');
+					location.reload();
+				} else {
+					console.error('Failed to delete the file', response.statusText);
+				}
+			}}
+			aria-label="Delete Image"
+		>
+		<Fa icon={faTrashCan} class="hover:text-red-800 text-xl"/>
+		</button>
+		
 		</div>
 	</div>
 {/if}
@@ -173,6 +194,19 @@
 	.modal-close:hover {
 		background-color: rgba(0, 0, 0, 0.5);
 	}
+	.modal-delete {
+		position: absolute;
+		top: 10px;
+		left: 20px;
+		font-size: 40px;
+		color: white;
+		cursor: pointer;
+		z-index: 1010;
+		padding: 10px;
+	}
+	.modal-delete:hover {
+		background-color: rgba(0, 0, 0, 0);
+	}
 
 	/* Arrow styling */
 	.arrow {
@@ -228,6 +262,6 @@
 
 	/* Hover effect with smaller area */
 	.arrow:hover::before {
-		background-color: rgba(0, 0, 0, 0.3); /* Kolor podczas hovera */
+		background-color: rgba(0, 0, 0, 0.3);
 	}
 </style>
