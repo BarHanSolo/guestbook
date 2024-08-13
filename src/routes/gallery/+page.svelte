@@ -53,8 +53,6 @@
 	
 </script>
 
-<h2 class="text-2xl">Photos</h2>
-<br />
 <div class="flex flex-wrap gap-4">
 	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
 		{#each imageUrls as url, index}

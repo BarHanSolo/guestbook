@@ -79,8 +79,6 @@
     });
 </script>
 
-<h2 class="text-2xl">Photos</h2>
-<br />
 <div class="flex flex-wrap gap-4">
     {#if isLoading}
         <p>Loading images...</p>
