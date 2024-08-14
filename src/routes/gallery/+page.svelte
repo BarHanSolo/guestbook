@@ -1,17 +1,32 @@
 <script lang="ts">
 	import { nextImage, prevImage } from '$lib/utils/modal';
 	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import Gallery from 'svelte-image-gallery';
 
 	export let data: { photos: string[] } | undefined;
 
 	let imageNames: string[] = data?.photos || [];
+	const imageUrls = imageNames.map((name) => `${name}`);
 	let selectedImage: string | null = null;
 	let showModal = false;
 	let currentIndex = 0;
+	let columnCount = 2;
 
-	const imageUrls = imageNames.map((name) => `${name}`);
+	onMount(() => {
+		const columns = getColumnCount();
+		if (columns !== null) {
+			columnCount = columns;
+		} else {
+			columnCount = 2;
+		}
+	});
+
+	function getColumnCount() {
+		const columnCount = localStorage.getItem('columnCount');
+		return columnCount ? parseInt(columnCount, 10) : null;
+	}
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
@@ -49,10 +64,14 @@
 	function goToPreviousImage() {
 		prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
 	}
+
+	$: innerWidth = 0
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div class="flex flex-wrap gap-4">
-	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
+	<Gallery gap="10" maxColumnWidth={innerWidth/(columnCount+1)} on:click={handleClick}>
 		{#each imageUrls as url, index}
 			<img src={url} alt="" style="cursor: pointer;" />
 		{/each}

@@ -28,6 +28,11 @@
 				user.set(res);
 				dialog.close();
 			});
+		saveColumnCount();
+	}
+
+	function saveColumnCount() {
+    	localStorage.setItem('columnCount', '2');
 	}
 </script>
 

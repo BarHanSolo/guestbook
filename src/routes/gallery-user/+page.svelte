@@ -11,6 +11,7 @@
 	import Gallery from 'svelte-image-gallery';
 
 	export let data: { photos: string[] } | undefined;
+
 	let imageNames: string[] = data?.photos || [];
 	let isLoading: boolean = true;
 
@@ -18,6 +19,21 @@
 	let selectedImage: string | null = null;
 	let showModal = false;
 	let currentIndex = 0;
+	let columnCount : number;
+
+	onMount(() => {
+		const columns = getColumnCount();
+		if (columns !== null) {
+			columnCount = columns;
+		} else {
+			columnCount = 2;
+		}
+	});
+
+	function getColumnCount() {
+		const columnCount = localStorage.getItem('columnCount');
+		return columnCount ? parseInt(columnCount, 10) : null;
+	}
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
@@ -82,13 +98,17 @@
 		imageUrls = await limitPhotos();
 		isLoading = false;
 	});
+
+	$: innerWidth = 0
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="flex flex-wrap gap-4">
 	{#if isLoading}
 		<p>Loading images...</p>
 	{:else}
-		<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
+		<Gallery gap="10" maxColumnWidth={innerWidth/(columnCount+1)} on:click={handleClick}>
 			{#each imageUrls as url, index}
 				<img src={url} alt="" style="cursor: pointer;" />
 			{/each}
