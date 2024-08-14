@@ -2,10 +2,10 @@
 	import { page } from '$app/stores';
 </script>
 
-<nav class="p-4 h-24 bg-gradient-to-b from-white to-white/0 via-white/95">
+<nav class="p-3 h-20 bg-gradient-to-b from-white to-white/0 via-white/95">
 	<ul class="flex justify-between">
 		<li>
-			<a class:text-skyblue-800={$page.url.pathname === '/upload'} href="/upload">Upload</a>
+			<a class:text-skyblue-800={$page.url.pathname === '/upload'} href="/upload">Dodaj zdjęcie</a>
 		</li>
 		<li>
 			<a class:text-skyblue-800={$page.url.pathname === '/gallery'} href="/gallery">Galeria</a>

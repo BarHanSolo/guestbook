@@ -1,17 +1,23 @@
 <script lang="ts">
-	import { nextImage, prevImage } from '$lib/utils/modal';
-	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faChevronLeft,
+		faChevronRight,
+		faTrashCan,
+		faXmark
+	} from '@fortawesome/free-solid-svg-icons';
+	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import Gallery from 'svelte-image-gallery';
 
 	export let data: { photos: string[] } | undefined;
 	let imageNames: string[] = data?.photos || [];
+	let isLoading: boolean = true;
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
 	}
 
-	const imageUrls = imageNames.map((name) => `${name}`);
+	let imageUrls = imageNames.map((name) => `${name}`);
 
 	let selectedImage: string | null = null;
 	let showModal = false;
@@ -34,29 +40,60 @@
 		openModal(index);
 	}
 
-	const setCurrentIndex = (index: number) => {
-		currentIndex = index; // Ustawia indeks bieżącego obrazu
-	};
-
-	const setSelectedImage = (image: string) => {
-		selectedImage = image; // Ustawia wybrany obraz
-	};
-
-	function goToNextImage() {
-		nextImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+	function nextImage() {
+		currentIndex = (currentIndex + 1) % imageUrls.length;
+		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 	}
 
-	function goToPreviousImage() {
-		prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+	function prevImage() {
+		currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 	}
+
+	async function getUsername() {
+		try {
+			const response = await fetch('/api/current-user', {
+				method: 'GET'
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch user data');
+			}
+
+			const data = await response.json();
+			const username = data.user.username;
+			return username;
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
+
+	async function limitPhotos(): Promise<string[]> {
+		const username = await getUsername();
+		const filteredUrls = imageUrls.filter((url) => {
+			const regex = new RegExp(`${username}\\d+`);
+			return regex.test(url);
+		});
+		return filteredUrls;
+	}
+
+	onMount(async () => {
+		imageUrls = await limitPhotos();
+		isLoading = false;
+	});
 </script>
 
 <div class="flex flex-wrap gap-4">
-	<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
-		{#each imageUrls as url, index}
-			<img src={url} alt="" style="cursor: pointer;" />
-		{/each}
-	</Gallery>
+	{#if isLoading}
+		<!-- Możesz dodać spinner lub tekst ładowania -->
+		<p>Loading images...</p>
+	{:else}
+		<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
+			{#each imageUrls as url, index}
+				<img src={url} alt="" style="cursor: pointer;" />
+			{/each}
+		</Gallery>
+	{/if}
 </div>
 
 <!-- Modal -->
@@ -69,11 +106,34 @@
 			<img src={selectedImage} alt="" />
 
 			<!-- Navigation Arrows -->
-			<button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
-				<Fa icon={faChevronLeft} />
-			</button>
-			<button class="arrow right-arrow" on:click={goToNextImage} aria-label="Next Image">
-				<Fa icon={faChevronRight} />
+			<button class="arrow left-arrow" on:click={prevImage} aria-label="Previous Image"
+				><Fa icon={faChevronLeft} /></button
+			>
+			<button class="arrow right-arrow" on:click={nextImage} aria-label="Next Image"
+				><Fa icon={faChevronRight} /></button
+			>
+			<!-- Delete Button -->
+			<button
+				class="modal-delete hover:text-red-800 text-xl"
+				on:click={async (e) => {
+					const response = await fetch(``, {
+						method: 'DELETE',
+						body: JSON.stringify({ filename: selectedImage }),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+
+					if (response.ok) {
+						console.log('File deleted successfully');
+						location.reload();
+					} else {
+						console.error('Failed to delete the file', response.statusText);
+					}
+				}}
+				aria-label="Delete Image"
+			>
+				<Fa icon={faTrashCan} class="hover:text-red-800 text-xl" />
 			</button>
 		</div>
 	</div>
@@ -132,6 +192,19 @@
 	.modal-close:hover {
 		background-color: rgba(0, 0, 0, 0.5);
 	}
+	.modal-delete {
+		position: absolute;
+		top: 10px;
+		left: 20px;
+		font-size: 40px;
+		color: white;
+		cursor: pointer;
+		z-index: 1010;
+		padding: 10px;
+	}
+	.modal-delete:hover {
+		background-color: rgba(0, 0, 0, 0);
+	}
 
 	/* Arrow styling */
 	.arrow {
@@ -187,6 +260,6 @@
 
 	/* Hover effect with smaller area */
 	.arrow:hover::before {
-		background-color: rgba(0, 0, 0, 0.3); /* Kolor podczas hovera */
+		background-color: rgba(0, 0, 0, 0.3);
 	}
 </style>

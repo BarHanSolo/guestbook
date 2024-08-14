@@ -1,140 +1,143 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { nextImage, prevImage } from '$lib/utils/modal';
-    import { faChevronLeft, faChevronRight, faXmark, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-    import Fa from 'svelte-fa';
-    import Gallery from 'svelte-image-gallery';
+	import { nextImage, prevImage } from '$lib/utils/modal';
+	import {
+		faChevronLeft,
+		faChevronRight,
+		faTrashCan,
+		faXmark
+	} from '@fortawesome/free-solid-svg-icons';
+	import { onMount } from 'svelte';
+	import Fa from 'svelte-fa';
+	import Gallery from 'svelte-image-gallery';
 
-    export let data: { photos: string[] } | undefined;
-    let imageNames: string[] = data?.photos || [];
-    let isLoading: boolean = true;
+	export let data: { photos: string[] } | undefined;
+	let imageNames: string[] = data?.photos || [];
+	let isLoading: boolean = true;
 
-    let imageUrls = imageNames.map((name) => `${name}`);
-    let selectedImage: string | null = null;
-    let showModal = false;
-    let currentIndex = 0;
+	let imageUrls = imageNames.map((name) => `${name}`);
+	let selectedImage: string | null = null;
+	let showModal = false;
+	let currentIndex = 0;
 
-    function stripBaseUrl(url: string): string {
-        return url.replace(/^https?:\/\/[^/]+/, '');
-    }
+	function stripBaseUrl(url: string): string {
+		return url.replace(/^https?:\/\/[^/]+/, '');
+	}
 
-    const setCurrentIndex = (index: number) => {
-        currentIndex = index;
-    };
+	const setCurrentIndex = (index: number) => {
+		currentIndex = index;
+	};
 
-    const setSelectedImage = (image: string) => {
-        selectedImage = image;
-    };
+	const setSelectedImage = (image: string) => {
+		selectedImage = image;
+	};
 
-    function openModal(index: number) {
-        currentIndex = index;
-        selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
-        showModal = true;
-    }
+	function openModal(index: number) {
+		currentIndex = index;
+		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
+		showModal = true;
+	}
 
-    function closeModal() {
-        showModal = false;
-        selectedImage = null;
-    }
+	function closeModal() {
+		showModal = false;
+		selectedImage = null;
+	}
 
-    function handleClick(e: CustomEvent) {
-        const url = e.detail.src;
-        const index = imageUrls.indexOf(stripBaseUrl(url));
-        openModal(index);
-    }
+	function handleClick(e: CustomEvent) {
+		const url = e.detail.src;
+		const index = imageUrls.indexOf(stripBaseUrl(url));
+		openModal(index);
+	}
 
-    function goToNextImage() {
-        nextImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
-    }
+	function goToNextImage() {
+		nextImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+	}
 
-    function goToPreviousImage() {
-        prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
-    }
+	function goToPreviousImage() {
+		prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
+	}
 
-    async function getUsername() {
-        try {
-            const response = await fetch('/api/current-user', {
-                method: 'GET',
-            });
+	async function getUsername() {
+		try {
+			const response = await fetch('/api/current-user', {
+				method: 'GET'
+			});
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch user data');
-            }
+			if (!response.ok) {
+				throw new Error('Failed to fetch user data');
+			}
 
-            const data = await response.json();
-            return data.user.username;
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+			const data = await response.json();
+			return data.user.username;
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
 
-    async function limitPhotos(): Promise<string[]> {
-        const username = await getUsername();
-        return imageUrls.filter((url) => new RegExp(`${username}\\d+`).test(url));
-    }
+	async function limitPhotos(): Promise<string[]> {
+		const username = await getUsername();
+		return imageUrls.filter((url) => new RegExp(`${username}\\d+`).test(url));
+	}
 
-    onMount(async () => {
-        imageUrls = await limitPhotos();
-        isLoading = false;
-    });
+	onMount(async () => {
+		imageUrls = await limitPhotos();
+		isLoading = false;
+	});
 </script>
 
-<h2 class="text-2xl">Photos</h2>
-<br />
 <div class="flex flex-wrap gap-4">
-    {#if isLoading}
-        <p>Loading images...</p>
-    {:else}
-        <Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
-            {#each imageUrls as url, index}
-                <img src={url} alt="" style="cursor: pointer;" />
-            {/each}
-        </Gallery>
-    {/if}
+	{#if isLoading}
+		<p>Loading images...</p>
+	{:else}
+		<Gallery gap="10" maxColumnWidth="200" on:click={handleClick}>
+			{#each imageUrls as url, index}
+				<img src={url} alt="" style="cursor: pointer;" />
+			{/each}
+		</Gallery>
+	{/if}
 </div>
 
 <!-- Modal -->
 {#if showModal}
-    <div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
-        <div class="modal-content" role="document" on:click|stopPropagation>
-            <button class="modal-close text-xl" aria-label="Close" on:click={closeModal}>
-                <Fa scale="0.8" icon={faXmark} />
-            </button>
-            <img src={selectedImage} alt="" />
+	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
+		<div class="modal-content" role="document" on:click|stopPropagation>
+			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}>
+				<Fa scale="0.8" icon={faXmark} />
+			</button>
+			<img src={selectedImage} alt="" />
 
-            <!-- Navigation Arrows -->
-            <button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
-                <Fa icon={faChevronLeft} />
-            </button>
-            <button class="arrow right-arrow" on:click={goToNextImage} aria-label="Next Image">
-                <Fa icon={faChevronRight} />
-            </button>
+			<!-- Navigation Arrows -->
+			<button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
+				<Fa icon={faChevronLeft} />
+			</button>
+			<button class="arrow right-arrow" on:click={goToNextImage} aria-label="Next Image">
+				<Fa icon={faChevronRight} />
+			</button>
 
-            <!-- Delete Button -->
-            <button
-                class="modal-delete text-xl"
-                on:click={async () => {
-                    const response = await fetch('', {
-                        method: 'DELETE',
-                        body: JSON.stringify({ filename: selectedImage }),
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
+			<!-- Delete Button -->
+			<button
+				class="modal-delete text-xl"
+				on:click={async () => {
+					const response = await fetch('', {
+						method: 'DELETE',
+						body: JSON.stringify({ filename: selectedImage }),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
 
-                    if (response.ok) {
-                        console.log('File deleted successfully');
-                        location.reload();
-                    } else {
-                        console.error('Failed to delete the file', response.statusText);
-                    }
-                }}
-                aria-label="Delete Image"
-            >
-                <Fa scale='0.8' icon={faTrashCan} class="hover:text-red-800" />
-            </button>
-        </div>
-    </div>
+					if (response.ok) {
+						console.log('File deleted successfully');
+						location.reload();
+					} else {
+						console.error('Failed to delete the file', response.statusText);
+					}
+				}}
+				aria-label="Delete Image"
+			>
+				<Fa scale="0.8" icon={faTrashCan} class="hover:text-red-800" />
+			</button>
+		</div>
+	</div>
 {/if}
 
 <style>
