@@ -15,7 +15,7 @@
 	});
 </script>
 
-<section class="flex flex-col gap-2 py-2 h-screen w-screen">
+<section class="flex flex-col gap-2 py-2 min-h-screen">
 	<header class="sticky z-50 top-0">
 		<Menu />
 	</header>
