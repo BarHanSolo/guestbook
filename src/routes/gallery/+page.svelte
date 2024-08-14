@@ -14,18 +14,12 @@
 	let currentIndex = 0;
 	let columnCount = 2;
 
-	onMount(() => {
-		const columns = getColumnCount();
-		if (columns !== null) {
-			columnCount = columns;
-		} else {
-			columnCount = 2;
-		}
-	});
+    onMount(() => {
+        columnCount = getColumnCount();
+    });
 
 	function getColumnCount() {
-		const columnCount = localStorage.getItem('columnCount');
-		return columnCount ? parseInt(columnCount, 10) : null;
+		return columnCount = parseInt(localStorage.getItem('columnCount') as string);
 	}
 
 	function stripBaseUrl(url: string): string {
