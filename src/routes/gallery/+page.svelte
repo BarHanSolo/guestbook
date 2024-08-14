@@ -7,8 +7,7 @@
 
 	export let data: { photos: string[] } | undefined;
 
-	let imageNames: string[] = data?.photos || [];
-	const imageUrls = imageNames.map((name) => `${name}`);
+	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
 	let showModal = false;
 	let currentIndex = 0;
