@@ -5,17 +5,17 @@
 	import Gallery from 'svelte-image-gallery';
 
 	export let data: { photos: string[] } | undefined;
+
 	let imageNames: string[] = data?.photos || [];
+	let selectedImage: string | null = null;
+	let showModal = false;
+	let currentIndex = 0;
+
+	const imageUrls = imageNames.map((name) => `${name}`);
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
 	}
-
-	const imageUrls = imageNames.map((name) => `${name}`);
-
-	let selectedImage: string | null = null;
-	let showModal = false;
-	let currentIndex = 0;
 
 	function openModal(index: number) {
 		currentIndex = index;
@@ -34,13 +34,13 @@
 		openModal(index);
 	}
 
-	const setCurrentIndex = (index: number) => {
-		currentIndex = index; // Ustawia indeks bieżącego obrazu
-	};
+	function setCurrentIndex(index: number) {
+		currentIndex = index;
+	}
 
-	const setSelectedImage = (image: string) => {
-		selectedImage = image; // Ustawia wybrany obraz
-	};
+	function setSelectedImage(image: string) {
+		selectedImage = image;
+	}
 
 	function goToNextImage() {
 		nextImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
@@ -61,13 +61,17 @@
 
 <!-- Modal -->
 {#if showModal}
+	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+	<!-- TODO: Replace with real <dialog> element to handle a11y mess -->
 	<div class="modal" role="dialog" tabindex="0" on:click={closeModal}>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div class="modal-content" role="document" on:click|stopPropagation>
 			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}
 				><Fa scale="0.8" icon={faXmark} /></button
 			>
 			<img src={selectedImage} alt="" />
-
 			<!-- Navigation Arrows -->
 			<button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
 				<Fa icon={faChevronLeft} />
@@ -105,8 +109,8 @@
 
 	.modal-content {
 		position: relative;
-		width: 95vw; /* Umożliwia pełne wypełnienie ekranu */
-		height: 95vh; /* Umożliwia pełne wypełnienie ekranu */
+		width: 95vw;
+		height: 95vh;
 		overflow: hidden;
 		display: flex;
 		justify-content: center;
@@ -114,9 +118,9 @@
 	}
 
 	.modal-content img {
-		max-width: 100%; /* Umożliwia pełne wypełnienie kontenera w szerokości */
-		max-height: 100%; /* Umożliwia pełne wypełnienie kontenera w wysokości */
-		object-fit: cover; /* Umożliwia zachowanie proporcji obrazu */
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: cover;
 	}
 
 	.modal-close {
@@ -149,18 +153,18 @@
 	}
 
 	.left-arrow {
-		left: 0; /* Ustawiamy lewą strzałkę przy lewej krawędzi */
+		left: 0;
 		padding-left: 10px;
 		display: flex;
-		justify-content: flex-start; /* Wyrównanie do lewej */
+		justify-content: flex-start;
 		align-items: center;
 	}
 
 	.right-arrow {
-		right: 0; /* Ustawiamy prawą strzałkę przy prawej krawędzi */
+		right: 0;
 		padding-right: 10px;
 		display: flex;
-		justify-content: flex-end; /* Wyrównanie do prawej */
+		justify-content: flex-end;
 		align-items: center;
 	}
 
@@ -169,7 +173,7 @@
 		position: absolute;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		width: 60px;
 		height: 60px;
 		background-color: transparent;
 		transition: background-color 0.2s;
@@ -179,14 +183,13 @@
 		position: absolute;
 		top: 50%;
 		transform: translate(50%, -50%);
-		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		width: 60px;
 		height: 60px;
 		background-color: transparent;
 		transition: background-color 0.2s;
 	}
 
-	/* Hover effect with smaller area */
 	.arrow:hover::before {
-		background-color: rgba(0, 0, 0, 0.3); /* Kolor podczas hovera */
+		background-color: rgba(0, 0, 0, 0.125);
 	}
 </style>
