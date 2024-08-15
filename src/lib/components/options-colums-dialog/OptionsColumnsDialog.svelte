@@ -21,28 +21,6 @@
 	<Fa icon={faGripVertical} />
 </button>
 
-<!--<button class="change-column-count" aria-label="Column count" on:click={() => showColumnOptions = true}>
-	<Fa icon={faGripVertical} />
-</button>
-<dialog
-	bind:this={dialog}
-	on:close={() => (showColumnOptions = false)}
-	on:click|self={() => dialog.close()}
->
-	<div on:click|stopPropagation>
-		<slot name="header" />
-		<hr />
-        <div class="options-list">
-            {#each [1, 2, 3, 4, 5] as option}
-                <button on:click={() => { setColumnCount(option); dialog.close(); }}>
-                    {option} kolumn{option === 1 ? 'a' : option === 5 ? '' : 'y'}
-                </button>
-            {/each}
-        </div>
-        <hr />
-	</div>
-</dialog>-->
-
 <style>
 	dialog {
 		max-width: 32em;
