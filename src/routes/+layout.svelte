@@ -21,11 +21,6 @@
 	</header>
 	<main class="p-2">
 		<slot />
-		<style>
-			body {
-				font-family: 'Cormorant SC';
-			}
-		</style>
 	</main>
 	<!-- TODO: Footer goes here -->
 </section>
