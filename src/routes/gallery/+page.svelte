@@ -8,10 +8,11 @@
 
 	export let data: { photos: string[] } | undefined;
 
+	const regex = /\/uploads\/photos\/([^0-9]+)(?=\d+\.\w+)/;
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
+	let userOfSelectedImage: string | null = null;
 	let showModal = false;
-	let showColumnOptions = false;
 	let currentIndex = 0;
 	let columnCount = 2;
 
@@ -63,6 +64,11 @@
 
 	function setSelectedImage(image: string) {
 		selectedImage = image;
+		console.log(image)
+		const match = image.match(regex);
+		if (match) {
+        	userOfSelectedImage = match[1].trim(); // Zwracamy pierwszą grupę i usuwamy białe znaki
+    	}
 	}
 
 	function goToNextImage() {
@@ -112,6 +118,7 @@
 			<button class="modal-download" on:click={downloadImage}>
 				<Fa scale="0.8" icon={faDownload} />
 			</button>
+			<p class="image-uploader">Przesłane przez: {userOfSelectedImage}</p>
 		</div>
 	</div>
 {/if}
@@ -238,5 +245,16 @@
 
 	.arrow:hover::before {
 		background-color: rgba(0, 0, 0, 0.125);
+	}
+
+	.image-uploader {
+		font-size: 0.8em; /* Zmniejszenie rozmiaru tekstu */
+		text-align: left; /* Wyrównanie tekstu do lewej */
+		margin-top: 10px; /* Odstęp od zdjęcia */
+		color: #FFF; /* Opcjonalnie: kolor tekstu */
+		width: 100%; /* Ustawienie szerokości na 100% */
+		position: absolute; /* Umożliwia umieszczenie pod obrazkiem */
+		bottom: 10px; /* Odstęp od dołu modal */
+		left: 20px; /* Wyrównanie do lewej */
 	}
 </style>

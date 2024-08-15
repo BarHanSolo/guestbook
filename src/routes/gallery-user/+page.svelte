@@ -14,11 +14,9 @@
 	export let data: { photos: string[] } | undefined;
 
 	let isLoading: boolean = true;
-
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
 	let showModal = false;
-	let showColumnOptions = false;
 	let currentIndex = 0;
 	let columnCount = 2;
 
@@ -103,7 +101,7 @@
 
 <svelte:window bind:innerWidth />
 
-<OptionsColumnsDialog bind:showColumnOptions bind:columnCount  on:columnChange={handleColumnChange}/>
+<OptionsColumnsDialog bind:columnCount  on:columnChange={handleColumnChange}/>
 
 <div class="flex flex-wrap gap-4">
 	{#if isLoading}
