@@ -6,6 +6,15 @@ a {
 	@apply text-skyblue-500 hover:text-skyblue-900 underline;
 }
 
+body {
+    @apply bg-cover bg-center bg-no-repeat;
+    background-image: url('s.webp');
+	background-size: cover; /* Obrazek dopasuje się do wymiarów ekranu, zachowując proporcje */
+	background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazka */
+	background-position: center center; /* Ustawia obrazek na środku ekranu */
+	background-attachment: fixed; /* Ustawienie tła jako "fixed" sprawia, że obrazek jest przypięty do ekranu */
+}
+
 dialog {
 	@apply p-6 bg-white shadow-lg rounded-lg fixed;
 }

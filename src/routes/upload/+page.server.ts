@@ -81,7 +81,7 @@ async function generateUniqueFileName(
 	let newFileName = `${username}${formattedDate}${fileExtension}`;
 
 	while (userFiles.includes(newFileName)) {
-		newFileName = `${username}${formattedDate}${counter++}${fileExtension}`;
+		newFileName = `${username}${formattedDate}(${counter++})${fileExtension}`;
 	}
 
 	return newFileName;
