@@ -12,10 +12,15 @@ export async function POST({ request, cookies }) {
 
 	const jwtSecret = process.env.JWT_SECRET as string;
 	const id = simpleID(username);
-	const token = jwt.sign({ id, username }, jwtSecret, { expiresIn: '7days' });
+	const token = jwt.sign({ id, username }, jwtSecret, { expiresIn: '7d' });
 	const tokenDecoded = jwt.verify(token, jwtSecret) as jwt.JwtPayload;
 
-	cookies.set('token', token, { path: '/', httpOnly: false });
+	cookies.set('token', token, {
+		path: '/',
+		httpOnly: false,
+		secure: false,
+		maxAge: 7 * 24 * 60 * 60
+	});
 
 	return json({ user: tokenDecoded }, { status: 200 });
 }
