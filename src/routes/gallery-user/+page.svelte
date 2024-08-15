@@ -1,4 +1,5 @@
 <script lang="ts">
+	import OptionsColumnsDialog from '$lib/components/options-colums-dialog/OptionsColumnsDialog.svelte';
 	import { nextImage, prevImage } from '$lib/utils/modal';
 	import {
 		faChevronLeft,
@@ -17,6 +18,7 @@
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
 	let showModal = false;
+	let showColumnOptions = false;
 	let currentIndex = 0;
 	let columnCount = 2;
 
@@ -27,6 +29,10 @@
 	function getColumnCount() {
 		return columnCount = parseInt(localStorage.getItem('columnCount') as string);
 	}
+
+	function handleColumnChange(event: { detail: number; }) {
+        columnCount = event.detail;
+    }
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
@@ -96,6 +102,8 @@
 </script>
 
 <svelte:window bind:innerWidth />
+
+<OptionsColumnsDialog bind:showColumnOptions bind:columnCount  on:columnChange={handleColumnChange}/>
 
 <div class="flex flex-wrap gap-4">
 	{#if isLoading}
