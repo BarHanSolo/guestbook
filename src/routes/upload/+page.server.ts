@@ -52,6 +52,7 @@ export const actions: Actions = {
 			fs.writeFileSync(filePath, buffer);
 			const thumbnailBuffer = await sharp(buffer).resize(400).toBuffer();
 			fs.writeFileSync(thumbPath, thumbnailBuffer);
+			console.log(filePath);
 			return { filePath };
 		} catch (e) {
 			console.error(e);
