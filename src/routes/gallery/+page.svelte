@@ -1,7 +1,7 @@
 <script lang="ts">
 	import OptionsColumnsDialog from '$lib/components/options-colums-dialog/OptionsColumnsDialog.svelte';
 	import { nextImage, prevImage } from '$lib/utils/modal';
-	import { faChevronLeft, faChevronRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import { faChevronLeft, faChevronRight, faDownload, faXmark } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import Gallery from 'svelte-image-gallery';
@@ -18,6 +18,16 @@
     onMount(() => {
         columnCount = getColumnCount();
     });
+
+	function downloadImage() {
+        const link = document.createElement('a');
+        link.href = selectedImage;
+		console.log(link.href)
+        link.download = 'downloaded-image.png'; // Nazwa pliku, pod jaką będzie zapisany
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Usunięcie linku po kliknięciu
+    }
 
 	function getColumnCount() {
 		return columnCount = parseInt(localStorage.getItem('columnCount') as string);
@@ -99,6 +109,10 @@
 			<button class="arrow right-arrow" on:click={goToNextImage} aria-label="Next Image">
 				<Fa icon={faChevronRight} />
 			</button>
+			<!-- Picture downloading -->
+			<button class="modal-download" on:click={downloadImage}>
+				<Fa scale="0.8" icon={faDownload} />
+			</button>
 		</div>
 	</div>
 {/if}
@@ -154,6 +168,20 @@
 		padding: 10px;
 	}
 	.modal-close:hover {
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-download {
+		position: absolute;
+		bottom: 10px;
+		right: 20px;
+		font-size: 40px;
+		color: white;
+		cursor: pointer;
+		z-index: 1010;
+		padding: 10px;
+	}
+	.modal-download:hover {
 		background-color: rgba(0, 0, 0, 0.5);
 	}
 

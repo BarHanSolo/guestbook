@@ -33,7 +33,7 @@
         <div class="options-list">
             {#each [1, 2, 3, 4, 5] as option}
                 <button on:click={() => { setColumnCount(option); dialog.close(); }}>
-                    {option}
+                    {option} kolumn{option === 1 ? 'a' : option === 5 ? '' : 'y'}
                 </button>
             {/each}
         </div>
@@ -76,9 +76,13 @@
 			opacity: 1;
 		}
 	}
-	button {
+	.change-column-count {
 		display: flex;
         padding: 10px;
         margin-left: auto;
+	}
+	button {
+		display: flex;
+        padding: 10px;
 	}
 </style>
