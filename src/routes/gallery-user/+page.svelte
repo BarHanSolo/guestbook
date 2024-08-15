@@ -20,17 +20,17 @@
 	let currentIndex = 0;
 	let columnCount = 2;
 
-    onMount(() => {
-        columnCount = getColumnCount();
-    });
+	onMount(() => {
+		columnCount = getColumnCount();
+	});
 
 	function getColumnCount() {
-		return columnCount = parseInt(localStorage.getItem('columnCount') as string);
+		return (columnCount = parseInt(localStorage.getItem('columnCount') as string));
 	}
 
-	function handleColumnChange(event: { detail: number; }) {
-        columnCount = event.detail;
-    }
+	function handleColumnChange(event: { detail: number }) {
+		columnCount = event.detail;
+	}
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
@@ -96,18 +96,18 @@
 		isLoading = false;
 	});
 
-	$: innerWidth = 0
+	$: innerWidth = 0;
 </script>
 
 <svelte:window bind:innerWidth />
 
-<OptionsColumnsDialog bind:columnCount  on:columnChange={handleColumnChange}/>
+<OptionsColumnsDialog bind:columnCount on:columnChange={handleColumnChange} />
 
 <div class="flex flex-wrap gap-4">
 	{#if isLoading}
 		<p>Loading images...</p>
 	{:else}
-		<Gallery gap="10" maxColumnWidth={innerWidth/(columnCount+1)} on:click={handleClick}>
+		<Gallery gap="10" maxColumnWidth={innerWidth / (columnCount + 1)} on:click={handleClick}>
 			{#each imageUrls as url, index}
 				<img src={url} alt="" style="cursor: pointer;" />
 			{/each}
@@ -185,8 +185,8 @@
 
 	.modal-content {
 		position: relative;
-		width: 95vw; /* Umożliwia pełne wypełnienie ekranu */
-		height: 95vh; /* Umożliwia pełne wypełnienie ekranu */
+		width: 95vw;
+		height: 95vh;
 		overflow: hidden;
 		display: flex;
 		justify-content: center;
@@ -194,9 +194,9 @@
 	}
 
 	.modal-content img {
-		max-width: 100%; /* Umożliwia pełne wypełnienie kontenera w szerokości */
-		max-height: 100%; /* Umożliwia pełne wypełnienie kontenera w wysokości */
-		object-fit: cover; /* Umożliwia zachowanie proporcji obrazu */
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: cover;
 	}
 
 	.modal-close {
@@ -230,18 +230,18 @@
 	}
 
 	.left-arrow {
-		left: 0; /* Ustawiamy lewą strzałkę przy lewej krawędzi */
+		left: 0;
 		padding-left: 10px;
 		display: flex;
-		justify-content: flex-start; /* Wyrównanie do lewej */
+		justify-content: flex-start;
 		align-items: center;
 	}
 
 	.right-arrow {
-		right: 0; /* Ustawiamy prawą strzałkę przy prawej krawędzi */
+		right: 0;
 		padding-right: 10px;
 		display: flex;
-		justify-content: flex-end; /* Wyrównanie do prawej */
+		justify-content: flex-end;
 		align-items: center;
 	}
 
@@ -250,7 +250,7 @@
 		position: absolute;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		width: 60px;
 		height: 60px;
 		background-color: transparent;
 		transition: background-color 0.2s;
@@ -260,7 +260,7 @@
 		position: absolute;
 		top: 50%;
 		transform: translate(50%, -50%);
-		width: 60px; /* Rozmiar faktycznego obszaru, który zmienia kolor */
+		width: 60px;
 		height: 60px;
 		background-color: transparent;
 		transition: background-color 0.2s;
@@ -268,7 +268,7 @@
 
 	/* Hover effect with smaller area */
 	.arrow:hover::before {
-		background-color: rgba(0, 0, 0, 0.3); /* Kolor podczas hovera */
+		background-color: rgba(0, 0, 0, 0.3);
 	}
 	.modal-delete {
 		position: absolute;

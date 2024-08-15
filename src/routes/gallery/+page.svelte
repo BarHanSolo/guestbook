@@ -1,7 +1,12 @@
 <script lang="ts">
 	import OptionsColumnsDialog from '$lib/components/options-colums-dialog/OptionsColumnsDialog.svelte';
 	import { nextImage, prevImage } from '$lib/utils/modal';
-	import { faChevronLeft, faChevronRight, faDownload, faXmark } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faChevronLeft,
+		faChevronRight,
+		faDownload,
+		faXmark
+	} from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import Gallery from 'svelte-image-gallery';
@@ -16,26 +21,26 @@
 	let currentIndex = 0;
 	let columnCount = 2;
 
-    onMount(() => {
-        columnCount = getColumnCount();
-    });
+	onMount(() => {
+		columnCount = getColumnCount();
+	});
 
 	function downloadImage() {
-        const link = document.createElement('a');
-        link.href = selectedImage!;
-        link.download = link.href.split('/').pop()!;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link); // Usunięcie linku po kliknięciu
-    }
-
-	function getColumnCount() {
-		return columnCount = parseInt(localStorage.getItem('columnCount') as string);
+		const link = document.createElement('a');
+		link.href = selectedImage!;
+		link.download = link.href.split('/').pop()!;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	}
 
-	function handleColumnChange(event: { detail: number; }) {
-        columnCount = event.detail;
-    }
+	function getColumnCount() {
+		return (columnCount = parseInt(localStorage.getItem('columnCount') as string));
+	}
+
+	function handleColumnChange(event: { detail: number }) {
+		columnCount = event.detail;
+	}
 
 	function stripBaseUrl(url: string): string {
 		return url.replace(/^https?:\/\/[^/]+/, '');
@@ -64,11 +69,11 @@
 
 	function setSelectedImage(image: string) {
 		selectedImage = image;
-		console.log(image)
+		console.log(image);
 		const match = image.match(regex);
 		if (match) {
-        	userOfSelectedImage = match[1].trim(); // Zwracamy pierwszą grupę i usuwamy białe znaki
-    	}
+			userOfSelectedImage = match[1].trim();
+		}
 	}
 
 	function goToNextImage() {
@@ -79,15 +84,15 @@
 		prevImage(currentIndex, imageUrls, setCurrentIndex, setSelectedImage);
 	}
 
-	$: innerWidth = 0
+	$: innerWidth = 0;
 </script>
 
 <svelte:window bind:innerWidth />
 
-<OptionsColumnsDialog bind:columnCount  on:columnChange={handleColumnChange}/>
+<OptionsColumnsDialog bind:columnCount on:columnChange={handleColumnChange} />
 
 <div class="flex flex-wrap gap-4">
-	<Gallery gap="10" maxColumnWidth={innerWidth/(columnCount+1)} on:click={handleClick}>
+	<Gallery gap="10" maxColumnWidth={innerWidth / (columnCount + 1)} on:click={handleClick}>
 		{#each imageUrls as url, index}
 			<img src={url} alt="" style="cursor: pointer;" />
 		{/each}
@@ -251,7 +256,7 @@
 		font-size: 0.8em; /* Zmniejszenie rozmiaru tekstu */
 		text-align: left; /* Wyrównanie tekstu do lewej */
 		margin-top: 10px; /* Odstęp od zdjęcia */
-		color: #FFF; /* Opcjonalnie: kolor tekstu */
+		color: #fff; /* Opcjonalnie: kolor tekstu */
 		width: 100%; /* Ustawienie szerokości na 100% */
 		position: absolute; /* Umożliwia umieszczenie pod obrazkiem */
 		bottom: 10px; /* Odstęp od dołu modal */
