@@ -21,9 +21,8 @@
 
 	function downloadImage() {
         const link = document.createElement('a');
-        link.href = selectedImage;
-		console.log(link.href)
-        link.download = 'downloaded-image.png'; // Nazwa pliku, pod jaką będzie zapisany
+        link.href = selectedImage!;
+        link.download = link.href.split('/').pop()!;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link); // Usunięcie linku po kliknięciu
@@ -79,7 +78,7 @@
 
 <svelte:window bind:innerWidth />
 
-<OptionsColumnsDialog bind:showColumnOptions bind:columnCount  on:columnChange={handleColumnChange}/>
+<OptionsColumnsDialog bind:columnCount  on:columnChange={handleColumnChange}/>
 
 <div class="flex flex-wrap gap-4">
 	<Gallery gap="10" maxColumnWidth={innerWidth/(columnCount+1)} on:click={handleClick}>

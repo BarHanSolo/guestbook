@@ -2,23 +2,26 @@
     import { createEventDispatcher } from 'svelte';
     import Fa from 'svelte-fa';
     import { faGripVertical } from '@fortawesome/free-solid-svg-icons';
-	export let showColumnOptions : boolean;
     export let columnCount : number;
 
-	let dialog: HTMLDialogElement;
     const dispatch = createEventDispatcher();
 
-	$: if (dialog && showColumnOptions) dialog.showModal();
-
-    function setColumnCount(count: number) {
-        columnCount = count;
-        localStorage.setItem('columnCount', count.toString());
-        dispatch('columnChange', columnCount);
-        showColumnOptions = false;
-    }
+	function changeColumnCount() {
+		if (columnCount == 4){
+			localStorage.setItem('columnCount', '1');
+			dispatch('columnChange', 1);
+		} else {
+			localStorage.setItem('columnCount', (columnCount+1).toString());
+			dispatch('columnChange', columnCount+1);
+		}
+	}
 </script>
 
-<button class="change-column-count" aria-label="Column count" on:click={() => showColumnOptions = true}>
+<button class="change-column-count" aria-label="Column count" on:click={() => changeColumnCount()}>
+	<Fa icon={faGripVertical} />
+</button>
+
+<!--<button class="change-column-count" aria-label="Column count" on:click={() => showColumnOptions = true}>
 	<Fa icon={faGripVertical} />
 </button>
 <dialog
@@ -26,7 +29,6 @@
 	on:close={() => (showColumnOptions = false)}
 	on:click|self={() => dialog.close()}
 >
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
 		<slot name="header" />
 		<hr />
@@ -39,7 +41,7 @@
         </div>
         <hr />
 	</div>
-</dialog>
+</dialog>-->
 
 <style>
 	dialog {
