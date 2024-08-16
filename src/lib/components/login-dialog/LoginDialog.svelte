@@ -32,11 +32,11 @@
 	}
 
 	function saveColumnCount() {
-    	localStorage.setItem('columnCount', '2');
+		localStorage.setItem('columnCount', '2');
 	}
 </script>
 
-<dialog bind:this={dialog} class="bg-[url('s.webp')] bg-center w-11/12 h-1/2">
+<dialog bind:this={dialog} class="bg-[url('/s.webp')] bg-center w-11/12 h-1/2">
 	<!-- wrapper for dialog body, there might be a bug with <dialog> element, if you give it display flex, close() method doesn't close   -->
 	<div class="w-full h-full flex items-center justify-center">
 		<div class="flex flex-col gap-8">

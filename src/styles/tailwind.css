@@ -8,7 +8,7 @@ a {
 
 body {
 	@apply bg-cover bg-center bg-no-repeat;
-	background-image: url('s.webp');
+	background-image: url('/s.webp');
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
