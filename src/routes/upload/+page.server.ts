@@ -26,9 +26,13 @@ export const actions: Actions = {
 		}
 
 		const uploadDirPhotos = path.resolve('uploads/photos');
-		const uploadDirThumbnails = path.resolve('uploads/thumbnails');
 		if (!fs.existsSync(uploadDirPhotos)) {
 			fs.mkdirSync(uploadDirPhotos, { recursive: true });
+		}
+
+		const uploadDirThumbnails = path.resolve('uploads/thumbnails');
+		if (!fs.existsSync(uploadDirThumbnails)) {
+			fs.mkdirSync(uploadDirThumbnails, { recursive: true });
 		}
 
 		const token = cookies.get('token');
