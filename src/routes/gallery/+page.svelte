@@ -17,6 +17,7 @@
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
 	let userOfSelectedImage: string | null = null;
+	console.log(userOfSelectedImage);
 	let showModal = false;
 	let currentIndex = 0;
 	let columnCount = 2;
@@ -60,6 +61,7 @@
 	function handleClick(e: CustomEvent) {
 		const url = e.detail.src;
 		const index = imageUrls.indexOf(stripBaseUrl(url));
+		setSelectedImage(stripBaseUrl(url).replace('/thumbnails/', '/photos/'));
 		openModal(index);
 	}
 
@@ -69,7 +71,6 @@
 
 	function setSelectedImage(image: string) {
 		selectedImage = image;
-		console.log(image);
 		const match = image.match(regex);
 		if (match) {
 			userOfSelectedImage = match[1].trim();
