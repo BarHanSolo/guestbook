@@ -39,7 +39,8 @@ export const actions: Actions = {
 		try {
 			const buffer = Buffer.from(await file.arrayBuffer());
 			fs.writeFileSync(filePath, buffer);
-			const thumbnailBuffer = await sharp(buffer).resize(400).rotate().toBuffer();
+			const { orientation } = await sharp(buffer).metadata();
+			const thumbnailBuffer = await sharp(buffer).resize(400).withMetadata({ orientation }).toBuffer();
 			fs.writeFileSync(thumbPath, thumbnailBuffer);
 			return { filePath };
 		} catch (e) {
