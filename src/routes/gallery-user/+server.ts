@@ -12,8 +12,10 @@ export async function DELETE({ request }: { request: Request }) {
 
 	try {
 		// Zakładam, że pliki są przechowywane w folderze '/uploads/photos'
-		const photosDirPath = path.resolve(filename);
-		const thumbnailsDirPath = path.resolve(filename.replace('/photos/', '/thumbnails/'));
+		const photosDirPath = path.resolve(filename.substring(1));
+		const thumbnailsDirPath = path.resolve(
+			filename.substring(1).replace('/photos/', '/thumbnails/')
+		);
 		await fs.unlink(photosDirPath); // Usuwa plik z serwera
 		await fs.unlink(thumbnailsDirPath);
 		return json({ message: 'File deleted successfully' });
