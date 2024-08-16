@@ -10,8 +10,8 @@ export async function DELETE({ request }: { request: Request }) {
     }
 
     try {
-        // Zakładam, że pliki są przechowywane w folderze 'static/uploads/photos'
-        const filePath = `static${filename}`;
+        // Zakładam, że pliki są przechowywane w folderze '/uploads/photos'
+        const filePath = `${filename}`;
         await fs.unlink(filePath); // Usuwa plik z serwera
         const thumbnailPath = filePath.replace('/photos/', '/thumbnails/');
         await fs.unlink(thumbnailPath);

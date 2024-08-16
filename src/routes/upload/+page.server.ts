@@ -25,8 +25,8 @@ export const actions: Actions = {
 			};
 		}
 
-		const uploadDirPhotos = path.resolve('static/uploads/photos');
-		const uploadDirThumbnails = path.resolve('static/uploads/thumbnails');
+		const uploadDirPhotos = path.resolve('uploads/photos');
+		const uploadDirThumbnails = path.resolve('uploads/thumbnails');
 		if (!fs.existsSync(uploadDirPhotos)) {
 			fs.mkdirSync(uploadDirPhotos, { recursive: true });
 		}

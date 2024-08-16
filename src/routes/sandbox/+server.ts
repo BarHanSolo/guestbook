@@ -5,7 +5,7 @@ import path from 'path';
 
 export function GET() {
 	// Ścieżka do katalogu z obrazami
-	const directoryPath = path.resolve('static/uploads/thumbnails');
+	const directoryPath = path.resolve('uploads/thumbnails');
 
 	let files = [];
 	try {
