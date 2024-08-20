@@ -58,7 +58,7 @@
 				</div>
 			{:else}
 				<div class="truncate">
-					{fileName || 'Wybierz zdjęcie'}
+					{fileName || 'Wybierz zdjęcia'}
 				</div>
 			{/if}
 		</label>
