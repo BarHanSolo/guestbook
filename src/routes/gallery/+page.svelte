@@ -16,6 +16,7 @@
 	const regex = /\/uploads\/photos\/([^0-9]+)(?=\d+\.\w+)/;
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
+	console.log(selectedImage)
 	let userOfSelectedImage: string | null = null;
 	console.log(userOfSelectedImage);
 	let showModal = false;
@@ -43,12 +44,17 @@
 		columnCount = event.detail;
 	}
 
-	function stripBaseUrl(url: string): string {
-		return url.replace(/^https?:\/\/[^/]+/, '');
+	function stripBaseUrlAndEncode(url: string): string {
+		let strippedUrl = url.replace(/^https?:\/\/[^/]+/, '');
+		let encodedUrl = decodeURIComponent(strippedUrl);
+		encodedUrl = encodedUrl.replace(/%2F/g, '/');
+		return encodedUrl;
 	}
 
 	function openModal(index: number) {
 		currentIndex = index;
+		console.log(currentIndex)
+		console.log(imageUrls[currentIndex])
 		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 		showModal = true;
 	}
@@ -60,8 +66,10 @@
 
 	function handleClick(e: CustomEvent) {
 		const url = e.detail.src;
-		const index = imageUrls.indexOf(stripBaseUrl(url));
-		setSelectedImage(stripBaseUrl(url).replace('/thumbnails/', '/photos/'));
+		console.log(stripBaseUrlAndEncode(url))
+		const index = imageUrls.indexOf(stripBaseUrlAndEncode(url));
+		console.log(index)
+		setSelectedImage(stripBaseUrlAndEncode(url).replace('/thumbnails/', '/photos/'));
 		openModal(index);
 	}
 
@@ -112,7 +120,7 @@
 			<button class="modal-close text-xl" aria-label="Close" on:click={closeModal}
 				><Fa scale="0.8" icon={faXmark} /></button
 			>
-			<img src={selectedImage} alt="" />
+			<img src={selectedImage}  class="max-h-[80%]" alt="" />
 			<!-- Navigation Arrows -->
 			<button class="arrow left-arrow" on:click={goToPreviousImage} aria-label="Previous Image">
 				<Fa icon={faChevronLeft} />
@@ -124,7 +132,7 @@
 			<button class="modal-download" on:click={downloadImage}>
 				<Fa scale="0.8" icon={faDownload} />
 			</button>
-			<p class="image-uploader">Przesłane przez: {userOfSelectedImage}</p>
+			<p class="image-uploader w-3/5 truncate" title="{userOfSelectedImage}">Przesłane przez: {userOfSelectedImage}</p>
 		</div>
 	</div>
 {/if}
@@ -165,7 +173,7 @@
 
 	.modal-content img {
 		max-width: 100%;
-		max-height: 100%;
+		max-height: 90%;
 		object-fit: cover;
 	}
 
@@ -254,13 +262,12 @@
 	}
 
 	.image-uploader {
-		font-size: 0.8em; /* Zmniejszenie rozmiaru tekstu */
-		text-align: left; /* Wyrównanie tekstu do lewej */
-		margin-top: 10px; /* Odstęp od zdjęcia */
-		color: #fff; /* Opcjonalnie: kolor tekstu */
-		width: 100%; /* Ustawienie szerokości na 100% */
-		position: absolute; /* Umożliwia umieszczenie pod obrazkiem */
-		bottom: 10px; /* Odstęp od dołu modal */
-		left: 20px; /* Wyrównanie do lewej */
+		font-size: 0.8em;
+		text-align: left;
+		margin-top: 10px; 
+		color: #fff;
+		position: absolute; 
+		bottom: 10px;
+		left: 20px;
 	}
 </style>

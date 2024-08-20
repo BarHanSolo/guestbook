@@ -13,7 +13,10 @@
 
 	function handleFileChanged(event: Event): void {
 		const input = event.target as HTMLInputElement;
-		fileName = input.files?.[0]?.name;
+		if (input.files) {
+			const fileNames = Array.from(input.files).map(file => file.name);
+			fileName = fileNames.join(', ');
+		}
 	}
 
 	$: capture = captureNew ? 'environment' : (undefined as 'environment' | undefined);
@@ -21,6 +24,7 @@
 
 <form class="flex" method="post" {action} enctype="multipart/form-data">
 	<div class="flex">
+		{#if captureNew}
 		<input
 			type="file"
 			name="file"
@@ -31,6 +35,19 @@
 			on:change={handleFileChanged}
 			{capture}
 		/>
+		{:else}
+			<input
+			type="file"
+			name="file"
+			accept="image/*"
+			{id}
+			class="hidden"
+			required
+			on:change={handleFileChanged}
+			{capture}
+			multiple
+		/>
+		{/if}
 		<label
 			for={id}
 			class="flex flex-1 items-center bg-gray-500 hover:bg-gray-600 text-white rounded rounded-r-none px-4 py-2 cursor-pointer max-w-40"

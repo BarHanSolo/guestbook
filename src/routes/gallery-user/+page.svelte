@@ -32,8 +32,11 @@
 		columnCount = event.detail;
 	}
 
-	function stripBaseUrl(url: string): string {
-		return url.replace(/^https?:\/\/[^/]+/, '');
+	function stripBaseUrlAndEncode(url: string): string {
+		let strippedUrl = url.replace(/^https?:\/\/[^/]+/, '');
+		let encodedUrl = decodeURIComponent(strippedUrl);
+		encodedUrl = encodedUrl.replace(/%2F/g, '/');
+		return encodedUrl;
 	}
 
 	const setCurrentIndex = (index: number) => {
@@ -57,7 +60,7 @@
 
 	function handleClick(e: CustomEvent) {
 		const url = e.detail.src;
-		const index = imageUrls.indexOf(stripBaseUrl(url));
+		const index = imageUrls.indexOf(stripBaseUrlAndEncode(url));
 		openModal(index);
 	}
 
@@ -195,7 +198,7 @@
 
 	.modal-content img {
 		max-width: 100%;
-		max-height: 100%;
+		max-height: 90%;
 		object-fit: cover;
 	}
 

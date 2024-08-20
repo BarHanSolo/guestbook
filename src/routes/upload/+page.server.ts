@@ -9,20 +9,22 @@ import sharp from 'sharp';
 export const actions: Actions = {
 	'upload-photo': async ({ request, cookies }) => {
 		const formData = await request.formData();
-		const file = formData.get('file') as File;
+		const files = formData.getAll('file') as File[];
 
-		if (!file) {
-			return error(400, { message: 'No file attached' });
+		if (files.length === 0) {
+			return error(400, { message: 'No files attached' });
 		}
 
 		// Sprawdzenie typu MIME
 		const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/heic'];
-		if (!allowedMimeTypes.includes(file.type)) {
-			return {
-				status: 400,
-				error: true,
-				message: 'Invalid file type. Only JPEG and PNG are allowed.'
-			};
+		for (const file of files) {
+			if (!allowedMimeTypes.includes(file.type)) {
+				return {
+					status: 400,
+					error: true,
+					message: 'Invalid file type. Only JPEG and PNG are allowed.'
+				};
+			}
 		}
 
 		const uploadDirPhotos = path.resolve('uploads/photos');
@@ -41,23 +43,32 @@ export const actions: Actions = {
 		}
 		const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as jwt.JwtPayload;
 		const username = decodedToken.username;
-		const fileExtension = path.extname(file.name);
-		const newFileName = await generateUniqueFileName(
-			file,
-			uploadDirPhotos,
-			fileExtension,
-			username
-		);
 
-		const filePath = path.join(uploadDirPhotos, newFileName);
-		const thumbPath = path.join(uploadDirThumbnails, newFileName);
+		const filePaths: string[] = [];
+
 		try {
-			const buffer = Buffer.from(await file.arrayBuffer());
-			fs.writeFileSync(filePath, buffer);
-			const thumbnailBuffer = await sharp(buffer).resize(400).toBuffer();
-			fs.writeFileSync(thumbPath, thumbnailBuffer);
-			console.log(filePath);
-			return { filePath };
+			for (const file of files) {
+				const fileExtension = path.extname(file.name);
+				const newFileName = await generateUniqueFileName(
+					file,
+					uploadDirPhotos,
+					fileExtension,
+					username
+				);
+
+				const filePath = path.join(uploadDirPhotos, newFileName);
+				const thumbPath = path.join(uploadDirThumbnails, newFileName);
+
+				const buffer = Buffer.from(await file.arrayBuffer());
+				fs.writeFileSync(filePath, buffer);
+
+				const thumbnailBuffer = await sharp(buffer).resize(400).toBuffer();
+				fs.writeFileSync(thumbPath, thumbnailBuffer);
+
+				filePaths.push(filePath); // Dodanie ścieżki pliku do tablicy
+			}
+
+			return { filePaths };
 		} catch (e) {
 			console.error(e);
 			return error(500, { message: 'Internal server error' });
