@@ -13,12 +13,10 @@
 
 	export let data: { photos: string[] } | undefined;
 
-	const regex = /\/uploads\/photos\/([^0-9]+)(?=\d+\.\w+)/;
+	const regex = /\/uploads\/photos\/(.+?)(?=(\(\d+\)|\d+)?(\(\d+\)|\d+)?\.\w+)/;
 	let imageUrls: string[] = data?.photos || [];
 	let selectedImage: string | null = null;
-	console.log(selectedImage)
 	let userOfSelectedImage: string | null = null;
-	console.log(userOfSelectedImage);
 	let showModal = false;
 	let currentIndex = 0;
 	let columnCount = 2;
@@ -53,8 +51,6 @@
 
 	function openModal(index: number) {
 		currentIndex = index;
-		console.log(currentIndex)
-		console.log(imageUrls[currentIndex])
 		selectedImage = imageUrls[currentIndex].replace('/thumbnails/', '/photos/');
 		showModal = true;
 	}
@@ -66,9 +62,7 @@
 
 	function handleClick(e: CustomEvent) {
 		const url = e.detail.src;
-		console.log(stripBaseUrlAndEncode(url))
 		const index = imageUrls.indexOf(stripBaseUrlAndEncode(url));
-		console.log(index)
 		setSelectedImage(stripBaseUrlAndEncode(url).replace('/thumbnails/', '/photos/'));
 		openModal(index);
 	}
@@ -82,6 +76,8 @@
 		const match = image.match(regex);
 		if (match) {
 			userOfSelectedImage = match[1].trim();
+		} else {
+			userOfSelectedImage = '-'
 		}
 	}
 
