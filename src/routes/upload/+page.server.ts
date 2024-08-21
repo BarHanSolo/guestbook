@@ -110,8 +110,13 @@ async function getCreationDate(file: File): Promise<string | null> {
 	try {
 		const exifData = parser.parse();
 		let dateTime = exifData.tags.DateTimeOriginal || exifData.tags.DateTime || null;
-		if (dateTime && dateTime < 1000000000) {
+		if (dateTime) {
+			dateTime = Number(dateTime);
 			dateTime *= 1000;
+			const currentTimeMillis = Date.now() + 172800000;  //two days added in case of shennaningans with timezones to be absolutely certain
+			if (dateTime > currentTimeMillis) {
+				dateTime /= 1000;
+			}
 		}
 		return dateTime;
 	} catch (e) {
