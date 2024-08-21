@@ -62,7 +62,7 @@ export const actions: Actions = {
 				const buffer = Buffer.from(await file.arrayBuffer());
 				fs.writeFileSync(filePath, buffer);
 
-				const thumbnailBuffer = await sharp(buffer).resize(400).toBuffer();
+				const thumbnailBuffer = await sharp(buffer).withMetadata().resize(400).toBuffer();
 				fs.writeFileSync(thumbPath, thumbnailBuffer);
 
 				filePaths.push(filePath); // Dodanie ścieżki pliku do tablicy
