@@ -109,7 +109,11 @@ async function getCreationDate(file: File): Promise<string | null> {
 
 	try {
 		const exifData = parser.parse();
-		return exifData.tags.DateTimeOriginal || exifData.tags.DateTime || null;
+		let dateTime = exifData.tags.DateTimeOriginal || exifData.tags.DateTime || null;
+		if (dateTime && dateTime < 1000000000) {
+			dateTime *= 1000;
+		}
+		return dateTime;
 	} catch (e) {
 		console.error('Error parsing EXIF data:', e);
 		return null;
